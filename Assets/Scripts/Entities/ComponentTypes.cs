@@ -5,6 +5,7 @@ using Unity.Transforms;
 public struct PlayerInput : IComponentData {
 
     public float3 Move;
+    public float Look;
 }
 
 public struct Health : IComponentData
@@ -12,7 +13,30 @@ public struct Health : IComponentData
     public float Value;
 }
 
-public struct MoveSpeed : IComponentData
+public struct ForceBasedMovement : IComponentData
 {
-    public float speed;
+    public float MovementSpeed;
+    public float RotationSpeed;
+    public float TurningCircleForce;
+}
+
+public struct TransformBasedMovement : IComponentData
+{
+    public float MovementSpeed;
+    public float RotationSpeed;
+}
+
+public struct TimePeriod : IComponentData
+{
+    public float Value;
+}
+
+public struct Depth : IComponentData
+{
+    public int Value;
+}
+
+public struct Size : IComponentData
+{
+    public int Value;
 }
