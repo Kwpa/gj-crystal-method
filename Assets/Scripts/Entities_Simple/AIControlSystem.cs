@@ -3,15 +3,14 @@ using UnityEngine;
 using System;
 
 
-public class PlayerInputSystem : ComponentSystem
+public class AIControlSystem : ComponentSystem
 {
     struct PlayerData
     {
 #pragma warning disable 649
         public readonly int Length;
 #pragma warning restore 649
-
-        public ComponentDataArray<PlayerInput> Input;
+        public ComponentDataArray<AIControlInput> Input;
     }
 
     [Inject] private PlayerData m_Players;
@@ -28,14 +27,16 @@ public class PlayerInputSystem : ComponentSystem
 
     private void UpdatePlayerInput(int i, float dt)
     {
-        PlayerInput pi;
+        AIControlInput ai;
 
-        pi.Move.x = 0.0f;
-        pi.Move.y = Input.GetAxis("Vertical");
-        pi.Move.z = 0.0f;
-        pi.Look = Input.GetAxis("Horizontal");
+        var settings = Bootstrap.Settings;
 
-        m_Players.Input[i] = pi;
+        ai.Move.x = 0.0f;
+        ai.Move.y = 1;
+        ai.Move.z = 0.0f;
+        ai.Scale = new Unity.Mathematics.float3(1, 1, 1);
+        ai.Look = 1;
+        m_Players.Input[i] = ai;
     }
 }
 

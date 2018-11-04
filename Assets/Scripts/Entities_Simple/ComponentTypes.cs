@@ -2,10 +2,18 @@
 using Unity.Mathematics;
 using Unity.Transforms;
 
-public struct PlayerInput : IComponentData {
-
+public struct PlayerInput : IComponentData
+{
     public float3 Move;
     public float Look;
+    public float3 Scale;
+}
+
+public struct AIControlInput : IComponentData
+{
+    public float3 Move;
+    public float Look;
+    public float3 Scale;
 }
 
 public struct Health : IComponentData

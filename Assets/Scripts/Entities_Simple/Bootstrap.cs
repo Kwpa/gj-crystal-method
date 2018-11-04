@@ -8,7 +8,10 @@ using UnityEngine.SceneManagement;
 public sealed class Bootstrap
 {
     public static EntityArchetype PlayerArchetype;
+    public static EntityArchetype AIPlayerArchetype;
     public static MeshInstanceRenderer PlayerLook;
+    public static MeshInstanceRenderer AIPlayerLook;
+
     public static Settings Settings;
 
     [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
@@ -22,7 +25,10 @@ public sealed class Bootstrap
         // Create player archetype
         PlayerArchetype = entityManager.CreateArchetype(
             typeof(Position), typeof(Rotation), typeof(PlayerInput),
-            typeof(Health), typeof(TransformBasedMovement), typeof(Parent));
+            typeof(Health), typeof(Scale), typeof(TransformBasedMovement));
+        AIPlayerArchetype = entityManager.CreateArchetype(
+            typeof(Position), typeof(Rotation), typeof(AIControlInput),
+            typeof(Health), typeof(Scale), typeof(TransformBasedMovement));
     }
 
     // Begin a new game.
@@ -31,19 +37,41 @@ public sealed class Bootstrap
         // Access the ECS entity manager
         var entityManager = World.Active.GetOrCreateManager<EntityManager>();
 
-        // Create an entity based on the player archetype. It will get default-constructed
-        // defaults for all the component types we listed.
-        Entity player = entityManager.CreateEntity(PlayerArchetype);
-
-        // We can tweak a few components to make more sense like this.
-        entityManager.SetComponentData(player, new Position { Value = new float3(0.0f, 0.0f, 0.0f) });
-        entityManager.SetComponentData(player, new Rotation { Value = quaternion.identity });
-        entityManager.SetComponentData(player, new Health { Value = Settings.playerHealth });
-
-        // Finally we add a shared component which dictates the rendered look
-        entityManager.AddSharedComponentData(player, PlayerLook);
-
+        for(int i = 0; i < Settings.numberOfPlayers; i++)
+        {
+            SpawnPlayer(entityManager);
+        }
+        for (int i = 0; i < Settings.numberOfAIPlayers; i++)
+        {
+            SpawnAIPlayer(entityManager);
+        }
     }
+
+    
+    public static void SpawnPlayer (EntityManager em)
+    {
+        float x = UnityEngine.Random.Range(-1.0f, 1.0f) * Settings.xSpread;
+        float y = UnityEngine.Random.Range(-1.0f, 1.0f) * Settings.ySpread;
+        Entity player = em.CreateEntity(PlayerArchetype);
+        em.SetComponentData(player, new Position { Value = new float3(x, y, 0.0f) });
+        em.SetComponentData(player, new Rotation { Value = quaternion.identity });
+        em.SetComponentData(player, new Health { Value = Settings.playerHealth });
+        em.SetComponentData(player, new Scale { Value = new float3(1.0f, 1.0f, 1.0f) });
+        em.AddSharedComponentData(player, PlayerLook);
+    }
+
+    public static void SpawnAIPlayer(EntityManager em)
+    {
+        float x = UnityEngine.Random.Range(-1.0f, 1.0f) * Settings.xSpread;
+        float y = UnityEngine.Random.Range(-1.0f, 1.0f) * Settings.ySpread;
+        Entity player = em.CreateEntity(AIPlayerArchetype);
+        em.SetComponentData(player, new Position { Value = new float3(x, y, 0.0f) });
+        em.SetComponentData(player, new Rotation { Value = quaternion.identity });
+        em.SetComponentData(player, new Health { Value = Settings.playerHealth });
+        em.SetComponentData(player, new Scale { Value = new float3(1.0f, 1.0f, 1.0f) });
+        em.AddSharedComponentData(player, AIPlayerLook);
+    }
+
 
     [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterSceneLoad)]
     public static void InitializeAfterSceneLoad()
@@ -71,12 +99,9 @@ public sealed class Bootstrap
             return;
 
         PlayerLook = GetLookFromPrototype("PlayerRenderPrototype");
-        
-        //var sceneSwitcher = GameObject.Find("SceneSwitcher");
-        //if (sceneSwitcher != null)
-        //{
-            NewGame();
-        //}
+        AIPlayerLook = GetLookFromPrototype("AIPlayerRenderPrototype");
+
+        NewGame();
     }
 
     private static void OnSceneLoaded(Scene scene, LoadSceneMode loadSceneMode)
