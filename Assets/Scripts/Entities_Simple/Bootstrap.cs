@@ -8,9 +8,12 @@ using UnityEngine.SceneManagement;
 public sealed class Bootstrap
 {
     public static EntityArchetype PlayerArchetype;
+    public static EntityArchetype RootArchetype;
     public static EntityArchetype AIPlayerArchetype;
+    public static EntityArchetype BackgroundArchetype;
     public static MeshInstanceRenderer PlayerLook;
     public static MeshInstanceRenderer AIPlayerLook;
+    public static MeshInstanceRenderer BackgroundLook;
 
     public static Settings Settings;
 
@@ -22,13 +25,23 @@ public sealed class Bootstrap
 
         var entityManager = World.Active.GetOrCreateManager<EntityManager>();
 
+        //create root
+        RootArchetype = entityManager.CreateArchetype(
+            typeof(Position), typeof(Rotation), typeof(Scale));
+
+        //create root
+        BackgroundArchetype = entityManager.CreateArchetype(
+            typeof(Position), typeof(Rotation), typeof(Scale)); 
+
         // Create player archetype
         PlayerArchetype = entityManager.CreateArchetype(
             typeof(Position), typeof(Rotation), typeof(PlayerInput),
-            typeof(Health), typeof(Scale), typeof(TransformBasedMovement));
+            typeof(Health), typeof(Scale));
+
+        // Create player archetype
         AIPlayerArchetype = entityManager.CreateArchetype(
             typeof(Position), typeof(Rotation), typeof(AIControlInput),
-            typeof(Health), typeof(Scale), typeof(TransformBasedMovement));
+            typeof(Health), typeof(Scale));
     }
 
     // Begin a new game.
@@ -37,18 +50,43 @@ public sealed class Bootstrap
         // Access the ECS entity manager
         var entityManager = World.Active.GetOrCreateManager<EntityManager>();
 
-        for(int i = 0; i < Settings.numberOfPlayers; i++)
+        World.Active.GetOrCreateManager<CameraMovementSystem>().FindCameraTransform();
+        Entity background = SpawnBackground(entityManager);
+        Entity root = SpawnRoot(entityManager);
+        Entity player = SpawnRoot(entityManager);
+        for (int i = 0; i < Settings.numberOfPlayers; i++)
         {
-            SpawnPlayer(entityManager);
+            player = SpawnPlayer(entityManager);
+            Parent(entityManager, root, player);
         }
+        root = player;
         for (int i = 0; i < Settings.numberOfAIPlayers; i++)
         {
-            SpawnAIPlayer(entityManager);
+            player = SpawnAIPlayer(entityManager);
+            Parent(entityManager, root, player);
         }
     }
 
-    
-    public static void SpawnPlayer (EntityManager em)
+    public static Entity SpawnRoot(EntityManager em)
+    {
+        Entity root = em.CreateEntity(RootArchetype);
+        em.SetComponentData(root, new Position { Value = new float3(0.0f, 0.0f, 0.0f) });
+        em.SetComponentData(root, new Rotation { Value = quaternion.identity });
+        em.SetComponentData(root, new Scale { Value = new float3(1.0f, 1.0f, 1.0f) });
+        return root;
+    }
+
+    public static Entity SpawnBackground(EntityManager em)
+    {
+        Entity background = em.CreateEntity(BackgroundArchetype);
+        em.SetComponentData(background, new Position { Value = new float3(0.0f, 0.0f, 0.0f) });
+        em.SetComponentData(background, new Rotation { Value = quaternion.identity });
+        em.SetComponentData(background, new Scale { Value = new float3(1000.0f, 1000.0f, 1000.0f) });
+        em.AddSharedComponentData(background, BackgroundLook);
+        return background;
+    }
+
+    public static Entity SpawnPlayer (EntityManager em)
     {
         float x = UnityEngine.Random.Range(-1.0f, 1.0f) * Settings.xSpread;
         float y = UnityEngine.Random.Range(-1.0f, 1.0f) * Settings.ySpread;
@@ -58,9 +96,10 @@ public sealed class Bootstrap
         em.SetComponentData(player, new Health { Value = Settings.playerHealth });
         em.SetComponentData(player, new Scale { Value = new float3(1.0f, 1.0f, 1.0f) });
         em.AddSharedComponentData(player, PlayerLook);
+        return player;
     }
 
-    public static void SpawnAIPlayer(EntityManager em)
+    public static Entity SpawnAIPlayer(EntityManager em)
     {
         float x = UnityEngine.Random.Range(-1.0f, 1.0f) * Settings.xSpread;
         float y = UnityEngine.Random.Range(-1.0f, 1.0f) * Settings.ySpread;
@@ -70,8 +109,14 @@ public sealed class Bootstrap
         em.SetComponentData(player, new Health { Value = Settings.playerHealth });
         em.SetComponentData(player, new Scale { Value = new float3(1.0f, 1.0f, 1.0f) });
         em.AddSharedComponentData(player, AIPlayerLook);
+        return player;
     }
 
+    public static void Parent(EntityManager em, Entity parent, Entity child)
+    {
+        var attach = em.CreateEntity(typeof(Attach));
+        em.SetComponentData(attach, new Attach { Parent = parent, Child = child });
+    }
 
     [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterSceneLoad)]
     public static void InitializeAfterSceneLoad()
@@ -100,6 +145,7 @@ public sealed class Bootstrap
 
         PlayerLook = GetLookFromPrototype("PlayerRenderPrototype");
         AIPlayerLook = GetLookFromPrototype("AIPlayerRenderPrototype");
+        BackgroundLook = GetLookFromPrototype("BackgroundRenderPrototype"); 
 
         NewGame();
     }

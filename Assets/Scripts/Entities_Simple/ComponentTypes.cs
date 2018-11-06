@@ -16,6 +16,11 @@ public struct AIControlInput : IComponentData
     public float3 Scale;
 }
 
+public struct CameraZoom : IComponentData
+{
+    public float Value;
+}
+
 public struct Health : IComponentData
 {
     public float Value;

@@ -51,6 +51,7 @@ public class PlayerMoveSystem : ComponentSystem
             p_Data.Input[index] = playerInput;
         }
 
+        //ai
         for (int index = 0; index < ai_Data.Length; ++index)
         {
             var position = ai_Data.Position[index].Value;
