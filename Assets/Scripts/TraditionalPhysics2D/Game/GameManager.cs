@@ -89,9 +89,13 @@ namespace Physics_Engine
             vertices3[0] = new Vector2(0, 0);
 
             //m_ObjectManager.Add(new GameObject(new Vector2(SCREEN_WIDTH * 0.5f, SCREEN_HEIGHT * 0.8f), m_Particle, new PhysicsPolygonDef(vertices, true, Material.FLUID)));
-            m_ObjectManager.Add(new PhysicsGameObjectTraditional(new Vector2(0, SCREEN_HEIGHT * 0.5f), m_Particle, new PhysicsPolygonDef(vertices2, true)));
-            m_ObjectManager.Add(new PhysicsGameObjectTraditional(new Vector2(SCREEN_WIDTH, SCREEN_HEIGHT * 0.5f), m_Particle, new PhysicsPolygonDef(vertices2, true)));
-            m_ObjectManager.Add(new PhysicsGameObjectTraditional(new Vector2(SCREEN_WIDTH * 0.5f, SCREEN_HEIGHT), m_Particle, new PhysicsPolygonDef(vertices3, true)));
+
+            //THREE PHYSOBJECTS!
+
+            //m_ObjectManager.Add(new PhysicsGameObjectTraditional(new Vector2(0, SCREEN_HEIGHT * 0.5f), m_Particle, new PhysicsPolygonDef(vertices2, true)));
+            //m_ObjectManager.Add(new PhysicsGameObjectTraditional(new Vector2(SCREEN_WIDTH, SCREEN_HEIGHT * 0.5f), m_Particle, new PhysicsPolygonDef(vertices2, true)));
+            //m_ObjectManager.Add(new PhysicsGameObjectTraditional(new Vector2(SCREEN_WIDTH * 0.5f, SCREEN_HEIGHT), m_Particle, new PhysicsPolygonDef(vertices3, true)));
+
         }
 
         /// <summary>

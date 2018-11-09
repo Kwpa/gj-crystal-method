@@ -66,7 +66,7 @@ namespace Physics_Engine.Physics
         private IsCollidingDelegate[,] m_CollisionFuncPtrs;
         private CollisionResolveDelegate[] m_ResolveFuncPtrs;
         private List<PhysicsBody> m_Bodies;
-        private static Vector2 m_Gravity = new Vector2(0, 20.0f);
+        private static Vector2 m_Gravity = new Vector2(0, -20.0f);
         private static Vector2 m_GravityNormal = peMath.LeftPerp(m_Gravity);//Normalized in constructor
         private int m_Iterations = 3;
         private bool m_ShowDebug = true;
@@ -86,8 +86,8 @@ namespace Physics_Engine.Physics
             m_CollisionListeners -= p_Listener;
         }
 
-        //public virtual void Update()   ????
-        public void Update(){
+//        public void Update(){
+        public virtual void Update(){   
             CollisionInfo collisionInfo;
 #region TEMP
             UnityEngine.Debug.Log("Bodies: " + m_Bodies.Count.ToString());
@@ -547,9 +547,9 @@ namespace Physics_Engine.Physics
 
             m_ResolveFuncPtrs = new CollisionResolveDelegate[Properties.Material.NR_MATERIALS];
             //If something is colliding with water (water never checks with collision for others, always static)
-            //m_ResolveFuncPtrs[Material.SOLID] = new CollisionResolveDelegate(ResolveSolid);                        ??????
+            m_ResolveFuncPtrs[Physics.Properties.Material.SOLID] = new CollisionResolveDelegate(ResolveSolid);                        //??????
             ////If something is colliding with water (water never checks with collision for others, always static)
-            //m_ResolveFuncPtrs[Material.FLUID] = new CollisionResolveDelegate(ResolveFluid);                       ?????
+            m_ResolveFuncPtrs[Physics.Properties.Material.FLUID] = new CollisionResolveDelegate(ResolveFluid);                       //?????
 
             m_GravityNormal.Normalize();
         }
