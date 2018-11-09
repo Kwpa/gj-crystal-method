@@ -8,7 +8,7 @@ using Physics_Engine.Helpers;
 
 namespace Physics_Engine.Physics
 {
-    public class PhysicsManager : MonoBehaviour
+    public class PhysicsManager// : MonoBehaviour
     {
         private struct Projection
         {
@@ -87,7 +87,7 @@ namespace Physics_Engine.Physics
         }
 
         //public virtual void Update()   ????
-        void Update(){
+        public void Update(){
             CollisionInfo collisionInfo;
 #region TEMP
             UnityEngine.Debug.Log("Bodies: " + m_Bodies.Count.ToString());

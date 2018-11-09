@@ -7,9 +7,9 @@ namespace Physics_Engine
 {
     class ObjectManager
     {
-        private static List<PhysicsGameObjectNormal> m_Objects;
-        public void Add(PhysicsGameObjectNormal p_GameObject) { m_Objects.Add(p_GameObject); }
-        public void Remove(PhysicsGameObjectNormal p_GameObject) {
+        private static List<PhysicsGameObjectTraditional> m_Objects;
+        public void Add(PhysicsGameObjectTraditional p_GameObject) { m_Objects.Add(p_GameObject); }
+        public void Remove(PhysicsGameObjectTraditional p_GameObject) {
             PhysicsManager.Instance.Remove(p_GameObject.Body);
             m_Objects.Remove(p_GameObject); 
         }
@@ -25,7 +25,7 @@ namespace Physics_Engine
         }
         public void Update()
         {
-            foreach (PhysicsGameObjectNormal gameObject in m_Objects)
+            foreach (PhysicsGameObjectTraditional gameObject in m_Objects)
                 gameObject.Update();
         }
 
@@ -34,7 +34,7 @@ namespace Physics_Engine
         //private static object m_SyncRoot = new Object();
         private ObjectManager()
         {
-            m_Objects = new List<PhysicsGameObjectNormal>();
+            m_Objects = new List<PhysicsGameObjectTraditional>();
         }
         public static ObjectManager Instance
         {

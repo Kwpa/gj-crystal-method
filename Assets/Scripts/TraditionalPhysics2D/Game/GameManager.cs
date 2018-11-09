@@ -1,18 +1,10 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Audio;
-using Microsoft.Xna.Framework.Content;
-using Microsoft.Xna.Framework.GamerServices;
-using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Input;
-using Microsoft.Xna.Framework.Media;
+using UnityEngine;
 
 using Physics_Engine.Physics;
 using Physics_Engine.Physics.Properties;
-using Physics_Engine.Graphics;
-using Physics_Engine.Input;
 using Physics_Engine.Helpers;
 
 namespace Physics_Engine
@@ -20,7 +12,7 @@ namespace Physics_Engine
     /// <summary>
     /// This is the main type for your game
     /// </summary>
-    public class GameManager : Microsoft.Xna.Framework.Game
+    public class GameManager : MonoBehaviour
     {
         private const int SCREEN_WIDTH = 800;
         private const int SCREEN_HEIGHT = 600;
@@ -29,17 +21,18 @@ namespace Physics_Engine
         public Texture2D m_Background;
         private ObjectManager m_ObjectManager;
         private PhysicsManager m_PhysicsManager;
-        private InputManager m_InputManager;
-        Random m_RandomGenerator;
+
+        //Random m_RandomGenerator;
+
         private float m_DeltaTime = 0;
 
-        public GraphicsDeviceManager m_Graphics { get; private set; }
+        //public GraphicsDeviceManager m_Graphics { get; private set; }
 
         private void CollisionListener(PhysicsManager.CollisionInfo cInfo, PhysicsBody body1, PhysicsBody body2){
-            RenderManager.Instance.DrawString("Body " + body1.GetID() + " collided with Body " + body2.GetID());
+            Debug.Log("Body " + body1.GetID() + " collided with Body " + body2.GetID());
             foreach (Vector2 cPoint in cInfo.CollisionPoints)
             {
-                RenderManager.Instance.DrawString("Collisionpoint: " + cPoint);
+                Debug.Log("Collisionpoint: " + cPoint);
             }
         }
 
@@ -49,29 +42,36 @@ namespace Physics_Engine
         /// related content.  Calling base.Initialize will enumerate through any components
         /// and initialize them as well.
         /// </summary>
-        protected override void Initialize()
+        void Awake()
         {
             // TODO: Add your initialization logic here
             m_ObjectManager = ObjectManager.Instance;
             m_PhysicsManager = PhysicsManager.Instance;
-            m_InputManager = InputManager.Instance;
-            base.Initialize();
         }
 
         /// <summary>
         /// LoadContent will be called once per game and is the place to load
         /// all of your content.
         /// </summary>
-        protected override void LoadContent()
+
+        void Start()
+        {
+            LoadContent();
+        }
+
+        public void LoadContent()
         {
             //PhysicsManager.Instance.RegisterListener(CollisionListener);
             // TODO: use this.Content to load your game content here
-            m_Background = Content.Load<Texture2D>("background");
+            
+            /*
             for(int i=0; i<NR_OF_PARTICLES; i++){
                 Vector2 randomPos = new Vector2(m_RandomGenerator.Next(0, m_Graphics.PreferredBackBufferWidth), m_RandomGenerator.Next(0, m_Graphics.PreferredBackBufferHeight));
                 float randomSize = (float)m_RandomGenerator.Next(12, 32);
                 m_ObjectManager.Add(new PhysicsGameObjectNormal(randomPos, m_Particle, new PhysicsCircleDef(randomSize)));
             }
+            */          //??????
+
             Vector2[] vertices = new Vector2[4];
             vertices[3] = new Vector2(-SCREEN_WIDTH * 0.5f, 50);
             vertices[2] = new Vector2(SCREEN_WIDTH*0.5f, 50);
@@ -89,20 +89,21 @@ namespace Physics_Engine
             vertices3[0] = new Vector2(0, 0);
 
             //m_ObjectManager.Add(new GameObject(new Vector2(SCREEN_WIDTH * 0.5f, SCREEN_HEIGHT * 0.8f), m_Particle, new PhysicsPolygonDef(vertices, true, Material.FLUID)));
-            m_ObjectManager.Add(new PhysicsGameObjectNormal(new Vector2(0, SCREEN_HEIGHT * 0.5f), m_Particle, new PhysicsPolygonDef(vertices2, true)));
-            m_ObjectManager.Add(new PhysicsGameObjectNormal(new Vector2(SCREEN_WIDTH, SCREEN_HEIGHT * 0.5f), m_Particle, new PhysicsPolygonDef(vertices2, true)));
-            m_ObjectManager.Add(new PhysicsGameObjectNormal(new Vector2(SCREEN_WIDTH * 0.5f, SCREEN_HEIGHT), m_Particle, new PhysicsPolygonDef(vertices3, true)));
+            m_ObjectManager.Add(new PhysicsGameObjectTraditional(new Vector2(0, SCREEN_HEIGHT * 0.5f), m_Particle, new PhysicsPolygonDef(vertices2, true)));
+            m_ObjectManager.Add(new PhysicsGameObjectTraditional(new Vector2(SCREEN_WIDTH, SCREEN_HEIGHT * 0.5f), m_Particle, new PhysicsPolygonDef(vertices2, true)));
+            m_ObjectManager.Add(new PhysicsGameObjectTraditional(new Vector2(SCREEN_WIDTH * 0.5f, SCREEN_HEIGHT), m_Particle, new PhysicsPolygonDef(vertices3, true)));
         }
 
         /// <summary>
         /// UnloadContent will be called once per game and is the place to unload
         /// all content.
         /// </summary>
-        protected override void UnloadContent()
-        {
-            Content.Unload();
-            // TODO: Unload any non ContentManager content here
-        }
+        
+        //protected override void UnloadContent()
+        //{
+        //    Content.Unload();
+        //    // TODO: Unload any non ContentManager content here
+        //}
 
         /// <summary>
         /// Allows the game to run logic such as updating the world,
@@ -121,34 +122,50 @@ namespace Physics_Engine
         Vector2 circleStartPos;
         List<Vector2> polygonVertices = new List<Vector2>();
         //temp
-        protected override void Update(GameTime gameTime)
-        {
-            m_DeltaTime = (float)gameTime.ElapsedGameTime.TotalSeconds;
-            // Allows the game to exit
-            if (Keyboard.GetState().IsKeyDown(Keys.Escape))
-                this.Exit();
 
+
+        void Update()
+        {
+            m_DeltaTime = Time.deltaTime;
+
+            // Allows the game to exit
+            if (Input.GetKeyDown(KeyCode.Escape))
+            {
+                //SceneManager.
+            }
+
+            /*
             //temp FPS counter
             double endtime = gameTime.TotalGameTime.Milliseconds - lastUpdateUpdate;
             RenderManager.Instance.DrawString("FPS: " + ((int)(1000 / endtime)).ToString());
             //RenderManager.Instance.DrawString("Delta: " + gameTime.ElapsedGameTime.TotalSeconds.ToString());
             lastUpdateUpdate = gameTime.TotalGameTime.Milliseconds;
+            */
 
-            if (m_InputManager.KeyWasPressed(Keys.C))
+            if (Input.GetKeyDown(KeyCode.Space))
+            {
+                m_ObjectManager.Add(
+                    new PhysicsGameObjectTraditional(
+                        new Vector2(0, 100), null, new PhysicsCircleDef(10, true, Physics.Properties.Material.SOLID)
+                        )
+                    );  
+            }
+
+            if (Input.GetKeyDown(KeyCode.C))
                 m_ObjectManager.Clear();
-            if (m_InputManager.KeyWasPressed(Keys.Z))
+            if (Input.GetKeyDown(KeyCode.Z))
                 m_ObjectManager.RemoveLast();
             
-            if (m_InputManager.KeyWasPressed(Keys.Q))
+            if (Input.GetKeyDown(KeyCode.Q))
                 isStatic = !isStatic;
-            if (m_InputManager.KeyWasPressed(Keys.W))
+            if (Input.GetKeyDown(KeyCode.W))
                 isWater = !isWater;
             if (isDrawingPoly == true || isDrawingCircle == true)
             {
-                RenderManager.Instance.DrawString("Static: " + isStatic.ToString());
-                RenderManager.Instance.DrawString("Material: " + (isWater ? Material.FLUID : Material.SOLID).ToString());
+                Debug.Log("Static: " + isStatic.ToString());
+                Debug.Log("Material: " + (isWater ? Physics.Properties.Material.FLUID : Physics.Properties.Material.SOLID).ToString());
             }
-            if (m_InputManager.KeyWasPressed(Keys.A)){
+            if (Input.GetKeyDown(KeyCode.A)){
                 if (isDrawingPoly == false)
                     isDrawingPoly = true;
                 else if (polygonVertices.Count > 2)
@@ -156,9 +173,10 @@ namespace Physics_Engine
                     Vector2 startPos = new Vector2();
                     foreach (Vector2 vertex in polygonVertices)
                         startPos += vertex;
-                    startPos.X /= polygonVertices.Count;
-                    startPos.Y /= polygonVertices.Count;
-                    m_ObjectManager.Add(new PhysicsGameObjectNormal(startPos, m_Particle, new PhysicsPolygonDef(polygonVertices.ToArray(), isStatic, isWater ? Material.FLUID : Material.SOLID)));
+                    startPos.x /= polygonVertices.Count;
+                    startPos.y /= polygonVertices.Count;
+                    m_ObjectManager.Add(new PhysicsGameObjectTraditional(startPos, m_Particle, new PhysicsPolygonDef(polygonVertices.ToArray(), 
+                        isStatic, isWater ? Physics.Properties.Material.FLUID : Physics.Properties.Material.SOLID)));
                     polygonVertices.Clear();
                     isDrawingPoly = false;
                 }
@@ -168,14 +186,14 @@ namespace Physics_Engine
                     polygonVertices.Clear();
                 }
             }
-            else if (m_InputManager.KeyWasPressed(Keys.S))
+            else if (Input.GetKeyDown(KeyCode.S))
             {
                 if (isDrawingCircle == false)
                     isDrawingCircle = true;
-                else if (circleStartPos != Vector2.Zero)
+                else if (circleStartPos != Vector2.zero)
                 {
-                    m_ObjectManager.Add(new PhysicsGameObjectNormal(circleStartPos, m_Particle, new PhysicsCircleDef(circleRadius, isStatic, Material.SOLID)));
-                    circleStartPos = Vector2.Zero;
+                    m_ObjectManager.Add(new PhysicsGameObjectTraditional(circleStartPos, m_Particle, new PhysicsCircleDef(circleRadius, isStatic, Physics.Properties.Material.SOLID)));
+                    circleStartPos = Vector2.zero;
                     circleRadius = 0;
                     isDrawingCircle = false;
                 }
@@ -184,10 +202,10 @@ namespace Physics_Engine
             }
             if (isDrawingPoly)
             {
-                RenderManager.Instance.DrawString("Drawing polygon");
+                Debug.Log("Drawing polygon");
                 foreach (Vector2 vertex in polygonVertices)
                 {
-                    RenderManager.Instance.DrawCircle(vertex, 6);
+                    Debug.DrawLine(vertex, vertex+new Vector2(-6,-6));
                 }
                 if (polygonVertices.Count > 2)
                 {
@@ -196,74 +214,71 @@ namespace Physics_Engine
                     Vector2 edgeNormal3 = peMath.LeftPerp(polygonVertices[0] - polygonVertices[polygonVertices.Count - 1]);
                     edgeNormal1.Normalize();
                     edgeNormal2.Normalize();
-                    Vector2 newEdge1 = polygonVertices[polygonVertices.Count - 1] - m_InputManager.GetMousePos();
-                    Vector2 newEdge2 = polygonVertices[0] - m_InputManager.GetMousePos();
+                    Vector2 newEdge1 = polygonVertices[polygonVertices.Count - 1] - (Vector2)Input.mousePosition;
+                    Vector2 newEdge2 = polygonVertices[0] - (Vector2)Input.mousePosition;
                     if (Vector2.Dot(newEdge1, edgeNormal1) < 0 && Vector2.Dot(newEdge2, edgeNormal2) < 0 && Vector2.Dot(newEdge2, edgeNormal3) > 0)
                     {
-                        RenderManager.Instance.DrawCircle(m_InputManager.GetMousePos(), 6, Color.Green);
-                        if (m_InputManager.MouseLeftWasPressed())
-                            polygonVertices.Add(m_InputManager.GetMousePos());
+                        Debug.DrawLine(Input.mousePosition, Input.mousePosition + new Vector3(7,7), Color.green);
+                        if (Input.GetMouseButtonDown(0))
+                            polygonVertices.Add(Input.mousePosition);
                     }
                     else
-                        RenderManager.Instance.DrawCircle(m_InputManager.GetMousePos(), 6, Color.Red);
+                        Debug.DrawLine(Input.mousePosition, Input.mousePosition + new Vector3(7, 7), Color.red);
                 }
                 else
                 {
                     if (polygonVertices.Count == 2)
                     {
-                        Vector2 edge = m_InputManager.GetMousePos() - polygonVertices[1];
+                        Vector2 edge = (Vector2)Input.mousePosition - polygonVertices[1];
                         Vector2 edgeNormal = peMath.LeftPerp(polygonVertices[1] - polygonVertices[0]);
                         edgeNormal.Normalize();
                         if (Vector2.Dot(edge, edgeNormal) > 0)
                         {
-                            RenderManager.Instance.DrawCircle(m_InputManager.GetMousePos(), 6, Color.Green);
-                            if (m_InputManager.MouseLeftWasPressed())
-                                polygonVertices.Add(m_InputManager.GetMousePos());
+                            Debug.DrawLine(Input.mousePosition, Input.mousePosition + new Vector3(7, 7), Color.green);
+                            if (Input.GetMouseButtonDown(0))
+                                polygonVertices.Add(Input.mousePosition);
                         }
                         else
-                            RenderManager.Instance.DrawCircle(m_InputManager.GetMousePos(), 6, Color.Red);
+                            Debug.DrawLine(Input.mousePosition, Input.mousePosition + new Vector3(7, 7), Color.red);
                     }
                     else
                     {
-                        RenderManager.Instance.DrawCircle(m_InputManager.GetMousePos(), 6, Color.Green);
-                        if (m_InputManager.MouseLeftWasPressed())
-                            polygonVertices.Add(m_InputManager.GetMousePos());
+                        Debug.DrawLine(Input.mousePosition, Input.mousePosition + new Vector3(7, 7), Color.green);
+                        if (Input.GetMouseButtonDown(0))
+                            polygonVertices.Add(Input.mousePosition);
                     }
                 }
             }
             else if (isDrawingCircle)
             {
-                RenderManager.Instance.DrawString("Drawing circle");
-                if (m_InputManager.MouseLeftWasPressed())
-                    circleStartPos = m_InputManager.GetMousePos();
-                if (m_InputManager.MouseLeftIsPressed())
-                    circleRadius = (circleStartPos - m_InputManager.GetMousePos()).Length();
-                RenderManager.Instance.DrawCircle(circleStartPos, circleRadius, Color.Green);
+                Debug.Log("Drawing circle");
+                if (Input.GetMouseButtonUp(0))
+                    circleStartPos = (Vector2)Input.mousePosition;
+                if (Input.GetMouseButtonDown(0))
+                    circleRadius = (circleStartPos - (Vector2)Input.mousePosition).magnitude;
+                Debug.DrawLine(Input.mousePosition, Input.mousePosition + new Vector3(circleRadius, circleRadius), Color.green);
             }
 
             // TODO: Add your update logic here
             m_PhysicsManager.Update();
             m_ObjectManager.Update();
-            m_InputManager.Update();
-            
-            base.Update(gameTime);
         }
 
         /// <summary>
         /// This is called when the game should draw itself.
         /// </summary>
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
-        protected override void Draw(GameTime gameTime)
-        {
-            //Update renderer, make it draw!
-            Physics_Engine.Graphics.RenderManager.Instance.Update();
-            //temp FPS counter
-            double endtime = gameTime.TotalGameTime.Milliseconds - lastUpdateDraw;
-            //RenderManager.Instance.DrawString("Draw: "+((int)(1000 / endtime)).ToString());
-            lastUpdateDraw = gameTime.TotalGameTime.Milliseconds;
+        //protected override void Draw(GameTime gameTime)
+        //{
+        //    //Update renderer, make it draw!
+        //    Physics_Engine.Graphics.RenderManager.Instance.Update();
+        //    //temp FPS counter
+        //    double endtime = gameTime.TotalGameTime.Milliseconds - lastUpdateDraw;
+        //    //RenderManager.Instance.DrawString("Draw: "+((int)(1000 / endtime)).ToString());
+        //    lastUpdateDraw = gameTime.TotalGameTime.Milliseconds;
 
-            base.Draw(gameTime);
-        }
+        //    base.Draw(gameTime);
+        //}
 
         public float    DeltaTime       { get { return m_DeltaTime; } }
         public int      ScreenHeight    { get { return SCREEN_HEIGHT; } }
@@ -271,27 +286,16 @@ namespace Physics_Engine
 
         //Singleton
         private static volatile GameManager m_Instance;
-        private static object m_SyncRoot = new Object();
+        //private static object m_SyncRoot = new Object();
         private GameManager()
         {
-            m_RandomGenerator = new Random();
-            m_Graphics = new GraphicsDeviceManager(this);
-            Window.Title = "Physics_Engine";
-            m_Graphics.PreferredBackBufferWidth = SCREEN_WIDTH;
-            m_Graphics.PreferredBackBufferHeight = SCREEN_HEIGHT;
-            m_Graphics.ApplyChanges();
-            Content.RootDirectory = "Content";
-
-            IsMouseVisible = true;
-            m_Graphics.SynchronizeWithVerticalRetrace = true;
-            IsFixedTimeStep = false;
         }
         public static GameManager Instance
         {
             get
             {
                 if (m_Instance == null)//Make sure not null == not instantiated
-                    lock (m_SyncRoot)//For thread-safety
+                    //lock (m_SyncRoot)//For thread-safety
                         if (m_Instance == null){//Check again to avoid earlier instantiation by other thread
                             m_Instance = new GameManager();
                         }
