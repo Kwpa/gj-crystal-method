@@ -51,7 +51,7 @@ public sealed class Bootstrap
         var entityManager = World.Active.GetOrCreateManager<EntityManager>();
 
         World.Active.GetOrCreateManager<CameraMovementSystem>().FindCameraTransform();
-        Entity background = SpawnBackground(entityManager);
+        Entity background = SpawnBackground(entityManager); 
         Entity root = SpawnRoot(entityManager);
         Entity player = SpawnRoot(entityManager);
         for (int i = 0; i < Settings.numberOfPlayers; i++)

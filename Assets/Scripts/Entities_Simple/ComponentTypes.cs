@@ -2,6 +2,10 @@
 using Unity.Mathematics;
 using Unity.Transforms;
 
+public struct EnterVehicle : IComponentData { }
+
+public struct ExitVehicle : IComponentData { }
+
 public struct PlayerInput : IComponentData
 {
     public float3 Move;
