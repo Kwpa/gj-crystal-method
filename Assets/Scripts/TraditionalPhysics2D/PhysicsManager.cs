@@ -8,7 +8,7 @@ using Physics_Engine.Helpers;
 
 namespace Physics_Engine.Physics
 {
-    class PhysicsManager
+    public class PhysicsManager : MonoBehaviour
     {
         private struct Projection
         {
@@ -85,11 +85,12 @@ namespace Physics_Engine.Physics
         {
             m_CollisionListeners -= p_Listener;
         }
-        
-        public virtual void Update(){
+
+        //public virtual void Update()   ????
+        void Update(){
             CollisionInfo collisionInfo;
 #region TEMP
-            //RenderManager.Instance.DrawString("Bodies: " + m_Bodies.Count.ToString());
+            UnityEngine.Debug.Log("Bodies: " + m_Bodies.Count.ToString());
             //Move selected body
             Vector2 mousePos = Input.mousePosition;
             if (bodySelected != null)
@@ -100,7 +101,7 @@ namespace Physics_Engine.Physics
                     bodySelected.AddForce(-bodySelected.Velocity * bodySelected.Mass * 0.5f, bodySelected.Position, FORCE_TYPE.IMPULSE);
                 bodySelected.AddForce(((Vector2)Input.mousePosition - (bodySelected.Position))*0.5f, bodySelected.Position, FORCE_TYPE.IMPULSE);
                 
-                //RenderManager.Instance.DrawLine(bodySelected.Position, Input.mousePosition); ???????
+                UnityEngine.Debug.DrawLine(bodySelected.Position, Input.mousePosition); //???????
             }
 #endregion
                 foreach (PhysicsBody body1 in m_Bodies)
@@ -138,6 +139,7 @@ namespace Physics_Engine.Physics
                 }
             lastMousePos = mousePos;
         }
+
         public void AddBody(PhysicsBody p_Body) 
         { 
             m_Bodies.Add(p_Body); 
@@ -432,10 +434,8 @@ namespace Physics_Engine.Physics
             foreach (Vector2 collisionPoint in collisionInfo.CollisionPoints)
             {
                 if (m_ShowDebug == true)
-
-
                 { 
-                    //    RenderManager.Instance.DrawCircle(collisionPoint, 6, Color.Red);    ????
+                    UnityEngine.Debug.DrawLine(collisionPoint, collisionPoint+new Vector2(0,1), Color.red);    //????
                 }
 
 
@@ -448,23 +448,23 @@ namespace Physics_Engine.Physics
                 Vector2 collisionPointRadius1 = collisionPoint - body1.Position;
                 Vector2 collisionPointRadius2 = collisionPoint - body2.Position;
 
-                //RenderManager.Instance.DrawLine(collisionPoint, collisionPoint + collisionInfo.CollisionNormal * 50, Color.Blue);
-                //RenderManager.Instance.DrawLine(body2.Position, body2.Position + collisionPointRadius2, Color.BlueViolet);
+                UnityEngine.Debug.DrawLine(collisionPoint, collisionPoint + collisionInfo.CollisionNormal * 50, Color.blue);
+                UnityEngine.Debug.DrawLine(body2.Position, body2.Position + collisionPointRadius2, Color.cyan);
 
                 //Calculate vector perpendicular to the vector from mass-center to collision-point
                 Vector2 collisionPointRadius1Perp = peMath.RightPerp(collisionPointRadius1);
                 Vector2 collisionPointRadius2Perp = peMath.RightPerp(collisionPointRadius2);
 
-                //RenderManager.Instance.DrawLine(body1.Position + collisionPointRadius1, body1.Position + collisionPointRadius1 + collisionPointRadius1Perp, Color.Red);
-                //RenderManager.Instance.DrawLine(body2.Position + collisionPointRadius2, body2.Position + collisionPointRadius2 + collisionPointRadius2Perp, Color.MediumVioletRed);
+                UnityEngine.Debug.DrawLine(body1.Position + collisionPointRadius1, body1.Position + collisionPointRadius1 + collisionPointRadius1Perp, Color.red);
+                UnityEngine.Debug.DrawLine(body2.Position + collisionPointRadius2, body2.Position + collisionPointRadius2 + collisionPointRadius2Perp, Color.yellow);
 
                 //Velocity at collisionpoint: Vp = ω * r⊥ + Va (r⊥ = perp vector to the vector from bodyCenter to collisionpoint)
                 Vector2 collisionPointVelocity1 = (body1.AngularVelocity * collisionPointRadius1Perp) + body1.Velocity;
                 Vector2 collisionPointVelocity2 = (body2.AngularVelocity * collisionPointRadius2Perp) + body2.Velocity;
 
                 //TEMP
-                //RenderManager.Instance.DrawLine(body1.Position + collisionPointRadius1, body1.Position + collisionPointRadius1 + collisionPointVelocity1, Color.Green);
-                //RenderManager.Instance.DrawLine(body2.Position + collisionPointRadius2, body2.Position + collisionPointRadius2 + collisionPointVelocity2, Color.Red);
+                UnityEngine.Debug.DrawLine(body1.Position + collisionPointRadius1, body1.Position + collisionPointRadius1 + collisionPointVelocity1, Color.green);
+                UnityEngine.Debug.DrawLine(body2.Position + collisionPointRadius2, body2.Position + collisionPointRadius2 + collisionPointVelocity2, Color.red);
                 //TEMP
 
                 //Relative velocity of body1s with respect to body2s collision-point velocity
