@@ -72,26 +72,40 @@ namespace Physics_Engine
             }
             */          //??????
 
-            float width = 1;
+            Vector2 pos1 = new Vector2(0, 0);
+            float width = 1; 
             float height = 1;
             Vector2[] vertices = new Vector2[4];
-            vertices[3] = new Vector2(width * 0.5f, height * -0.5f);
-            vertices[2] = new Vector2(width * -0.5f, height * -0.5f);
-            vertices[1] = new Vector2(width * -0.5f, height * 0.5f);
-            vertices[0] = new Vector2(width * 0.5f, height * 0.5f);
-            Vector2[] vertices2 = new Vector2[4];
-            vertices2[3] = new Vector2(width * 0.5f, height * -0.5f);
-            vertices2[2] = new Vector2(width * -0.5f, height * -0.5f);
-            vertices2[1] = new Vector2(width * -0.5f, height * 0.5f);
-            vertices2[0] = new Vector2(width * 0.5f, height * 0.5f);
+            float x = 2; float y = 2; float xm = -2; float ym = -2;
+            //x *= width * 0.5f; x += pos1.x;
+            //y *= height * 0.5f; y += pos1.y;
+            //xm *= width * 0.5f; xm += pos1.x;
+            //ym *= height * 0.5f; ym += pos1.y;
+            vertices[0] = new Vector2(x, y);
+            vertices[1] = new Vector2(xm, y);
+            vertices[2] = new Vector2(xm,ym);
+            vertices[3] = new Vector2(x,ym);
+            m_ObjectManager.Add(new PhysicsGameObjectTraditional(pos1, m_Particle, new PhysicsPolygonDef(vertices, false)));
 
+            pos1 = new Vector2(0, -10);
+            width = 1;
+            height = 1;
+            vertices = new Vector2[4];
+            x = 2; y = 2; xm = -2; ym = -2;
+            //x *= width * 0.5f; x += pos1.x;
+            //y *= height * 0.5f; y += pos1.y;
+            //xm *= width * 0.5f; xm += pos1.x;
+            //ym *= height * 0.5f; ym += pos1.y;
+            vertices[0] = new Vector2(x, y);
+            vertices[1] = new Vector2(xm, y);
+            vertices[2] = new Vector2(xm, ym);
+            vertices[3] = new Vector2(x, ym);
+            m_ObjectManager.Add(new PhysicsGameObjectTraditional(pos1, m_Particle, new PhysicsPolygonDef(vertices, true)));
 
             //m_ObjectManager.Add(new GameObject(new Vector2(SCREEN_WIDTH * 0.5f, SCREEN_HEIGHT * 0.8f), m_Particle, new PhysicsPolygonDef(vertices, true, Material.FLUID)));
 
             //THREE PHYSOBJECTS!
 
-            m_ObjectManager.Add(new PhysicsGameObjectTraditional(new Vector2(0, 0), m_Particle, new PhysicsPolygonDef(vertices, true)));
-            m_ObjectManager.Add(new PhysicsGameObjectTraditional(new Vector2(0, 0), m_Particle, new PhysicsPolygonDef(vertices2, true)));
             //m_ObjectManager.Add(new PhysicsGameObjectTraditional(new Vector2(SCREEN_WIDTH * 0.5f, SCREEN_HEIGHT*0.3f), m_Particle, new PhysicsPolygonDef(vertices3, true)));
 
         }
@@ -151,7 +165,7 @@ namespace Physics_Engine
         //temp
 
 
-        void Update()
+        void FixedUpdate()
         {
             m_DeltaTime = Time.deltaTime;
 

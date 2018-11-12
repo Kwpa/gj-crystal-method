@@ -26,8 +26,8 @@ namespace Physics_Engine.Physics
             //Water MUST be static (makes no sense to simulate rigid body of water)
             if (Material == Physics.Properties.Material.FLUID)
                 isStatic = true;
-            Density = (p_Material == Properties.Material.SOLID ? Properties.Density.WOOD : Properties.Density.WATER);
-            Bounciness = 0.2f;
+            Density = (p_Material == Properties.Material.SOLID ? Properties.Density.STEEL : Properties.Density.WATER);
+            Bounciness = 0.0f;
             VertexCount = p_Vertices.GetLength(0);
             m_Vertices = p_Vertices;
 
