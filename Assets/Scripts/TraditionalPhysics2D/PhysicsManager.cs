@@ -134,6 +134,7 @@ namespace Physics_Engine.Physics
                         //if (bodySelected != null &&  body1.GetID() != bodySelected.GetID() || bodySelected == null)
                         #endregion
                         body1.AddForce((m_Gravity) * body1.Mass, body1.Position, FORCE_TYPE.IMPULSE);
+
                         body1.Update();
                     }
                 }

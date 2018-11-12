@@ -72,37 +72,60 @@ namespace Physics_Engine
             }
             */          //??????
 
+            float width = 1;
+            float height = 1;
             Vector2[] vertices = new Vector2[4];
-            vertices[3] = new Vector2(-SCREEN_WIDTH * 0.5f, 50);
-            vertices[2] = new Vector2(SCREEN_WIDTH*0.5f, 50);
-            vertices[1] = new Vector2(SCREEN_WIDTH*0.5f, -200);
-            vertices[0] = new Vector2(-SCREEN_WIDTH*0.5f, -200);
+            vertices[3] = new Vector2(width * 0.5f, height * -0.5f);
+            vertices[2] = new Vector2(width * -0.5f, height * -0.5f);
+            vertices[1] = new Vector2(width * -0.5f, height * 0.5f);
+            vertices[0] = new Vector2(width * 0.5f, height * 0.5f);
             Vector2[] vertices2 = new Vector2[4];
-            vertices2[3] = new Vector2(0, SCREEN_HEIGHT);
-            vertices2[2] = new Vector2(50, SCREEN_HEIGHT);
-            vertices2[1] = new Vector2(50, 0);
-            vertices2[0] = new Vector2(0, 0);
-            Vector2[] vertices3 = new Vector2[4];
-            vertices3[3] = new Vector2(0, 50);
-            vertices3[2] = new Vector2(SCREEN_WIDTH, 50);
-            vertices3[1] = new Vector2(SCREEN_WIDTH, 0);
-            vertices3[0] = new Vector2(0, 0);
+            vertices2[3] = new Vector2(width * 0.5f, height * -0.5f);
+            vertices2[2] = new Vector2(width * -0.5f, height * -0.5f);
+            vertices2[1] = new Vector2(width * -0.5f, height * 0.5f);
+            vertices2[0] = new Vector2(width * 0.5f, height * 0.5f);
+
 
             //m_ObjectManager.Add(new GameObject(new Vector2(SCREEN_WIDTH * 0.5f, SCREEN_HEIGHT * 0.8f), m_Particle, new PhysicsPolygonDef(vertices, true, Material.FLUID)));
 
             //THREE PHYSOBJECTS!
 
-            //m_ObjectManager.Add(new PhysicsGameObjectTraditional(new Vector2(0, SCREEN_HEIGHT * 0.5f), m_Particle, new PhysicsPolygonDef(vertices2, true)));
-            //m_ObjectManager.Add(new PhysicsGameObjectTraditional(new Vector2(SCREEN_WIDTH, SCREEN_HEIGHT * 0.5f), m_Particle, new PhysicsPolygonDef(vertices2, true)));
-            //m_ObjectManager.Add(new PhysicsGameObjectTraditional(new Vector2(SCREEN_WIDTH * 0.5f, SCREEN_HEIGHT), m_Particle, new PhysicsPolygonDef(vertices3, true)));
+            m_ObjectManager.Add(new PhysicsGameObjectTraditional(new Vector2(0, 0), m_Particle, new PhysicsPolygonDef(vertices, true)));
+            m_ObjectManager.Add(new PhysicsGameObjectTraditional(new Vector2(0, 0), m_Particle, new PhysicsPolygonDef(vertices2, true)));
+            //m_ObjectManager.Add(new PhysicsGameObjectTraditional(new Vector2(SCREEN_WIDTH * 0.5f, SCREEN_HEIGHT*0.3f), m_Particle, new PhysicsPolygonDef(vertices3, true)));
 
+        }
+
+        private void OnDrawGizmos()
+        {
+            int j = -1;
+            foreach (PhysicsGameObjectTraditional g in ObjectManager.m_Objects)
+            {
+                Gizmos.color = Color.yellow;
+                Gizmos.DrawSphere(g.Position, 0.2f);
+                j++;
+                switch(j)
+                {
+                    case 0: Gizmos.color = Color.white; break;
+                    case 1: Gizmos.color = Color.blue; break;
+                    case 2: Gizmos.color = Color.green; break;
+                    case 3: Gizmos.color = Color.red; break; 
+                }
+
+                for (int i = 0; i < g.Body.PolygonDef.VertexCount; i++)
+                {
+                    Gizmos.DrawSphere(g.Body.PolygonDef.Vertices[i], 0.2f);
+                    int iModulus = (i+1) % g.Body.PolygonDef.VertexCount;
+                    Gizmos.DrawLine(g.Body.PolygonDef.Vertices[i], g.Body.PolygonDef.Vertices[iModulus]);
+                }
+            }
         }
 
         /// <summary>
         /// UnloadContent will be called once per game and is the place to unload
         /// all content.
         /// </summary>
-        
+
         //protected override void UnloadContent()
         //{
         //    Content.Unload();

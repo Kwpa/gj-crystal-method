@@ -7,7 +7,7 @@ namespace Physics_Engine
 {
     class ObjectManager
     {
-        private static List<PhysicsGameObjectTraditional> m_Objects;
+        public static List<PhysicsGameObjectTraditional> m_Objects;
         public void Add(PhysicsGameObjectTraditional p_GameObject) { m_Objects.Add(p_GameObject); }
         public void Remove(PhysicsGameObjectTraditional p_GameObject) {
             PhysicsManager.Instance.Remove(p_GameObject.Body);
