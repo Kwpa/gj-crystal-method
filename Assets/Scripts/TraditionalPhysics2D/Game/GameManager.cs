@@ -72,35 +72,16 @@ namespace Physics_Engine
             }
             */          //??????
 
+            
+            
+            
+            
             Vector2 pos1 = new Vector2(0, 0);
-            float width = 1; 
-            float height = 1;
-            Vector2[] vertices = new Vector2[4];
-            float x = 2; float y = 2; float xm = -2; float ym = -2;
-            //x *= width * 0.5f; x += pos1.x;
-            //y *= height * 0.5f; y += pos1.y;
-            //xm *= width * 0.5f; xm += pos1.x;
-            //ym *= height * 0.5f; ym += pos1.y;
-            vertices[0] = new Vector2(x, y);
-            vertices[1] = new Vector2(xm, y);
-            vertices[2] = new Vector2(xm,ym);
-            vertices[3] = new Vector2(x,ym);
-            m_ObjectManager.Add(new PhysicsGameObjectTraditional(pos1, m_Particle, new PhysicsPolygonDef(vertices, false)));
-
-            pos1 = new Vector2(0, -10);
-            width = 1;
-            height = 1;
-            vertices = new Vector2[4];
-            x = 2; y = 2; xm = -2; ym = -2;
-            //x *= width * 0.5f; x += pos1.x;
-            //y *= height * 0.5f; y += pos1.y;
-            //xm *= width * 0.5f; xm += pos1.x;
-            //ym *= height * 0.5f; ym += pos1.y;
-            vertices[0] = new Vector2(x, y);
-            vertices[1] = new Vector2(xm, y);
-            vertices[2] = new Vector2(xm, ym);
-            vertices[3] = new Vector2(x, ym);
-            m_ObjectManager.Add(new PhysicsGameObjectTraditional(pos1, m_Particle, new PhysicsPolygonDef(vertices, true)));
+            Vector2 pos2 = new Vector2(0, 3);
+            Vector2 pos3 = new Vector2(0.5f, 6);
+            m_ObjectManager.Add(new PhysicsGameObjectTraditional(pos1, m_Particle, new PhysicsPolygonDef(DefineRectangle(4, 1), true)));
+            m_ObjectManager.Add(new PhysicsGameObjectTraditional(pos2, m_Particle, new PhysicsPolygonDef(DefineRectangle(1, 1), false)));
+            m_ObjectManager.Add(new PhysicsGameObjectTraditional(pos3, m_Particle, new PhysicsPolygonDef(DefineRectangle(1, 1), false)));
 
             //m_ObjectManager.Add(new GameObject(new Vector2(SCREEN_WIDTH * 0.5f, SCREEN_HEIGHT * 0.8f), m_Particle, new PhysicsPolygonDef(vertices, true, Material.FLUID)));
 
@@ -110,13 +91,28 @@ namespace Physics_Engine
 
         }
 
+        public Vector2[] DefineRectangle(float width, float height)
+        {
+            Vector2[] vertices = new Vector2[4];
+            float x = 1; float y = 1; float xm = -1; float ym = -1;
+            x *= width * 0.5f;
+            y *= height * 0.5f;
+            xm *= width * 0.5f;
+            ym *= height * 0.5f;
+            vertices[0] = new Vector2(x, y);
+            vertices[1] = new Vector2(xm, y);
+            vertices[2] = new Vector2(xm, ym);
+            vertices[3] = new Vector2(x, ym);
+            return vertices;
+        }
+
         private void OnDrawGizmos()
         {
             int j = -1;
             foreach (PhysicsGameObjectTraditional g in ObjectManager.m_Objects)
             {
                 Gizmos.color = Color.yellow;
-                Gizmos.DrawSphere(g.Position, 0.2f);
+                Gizmos.DrawSphere(g.Position, 0.05f);
                 j++;
                 switch(j)
                 {
@@ -128,9 +124,9 @@ namespace Physics_Engine
 
                 for (int i = 0; i < g.Body.PolygonDef.VertexCount; i++)
                 {
-                    Gizmos.DrawSphere(g.Body.PolygonDef.Vertices[i], 0.2f);
+                    Gizmos.DrawSphere(g.Body.PolygonDef.Vertices[i]+g.Body.Position, 0.05f);
                     int iModulus = (i+1) % g.Body.PolygonDef.VertexCount;
-                    Gizmos.DrawLine(g.Body.PolygonDef.Vertices[i], g.Body.PolygonDef.Vertices[iModulus]);
+                    Gizmos.DrawLine(g.Body.PolygonDef.Vertices[i] + g.Body.Position, g.Body.PolygonDef.Vertices[iModulus] + g.Body.Position);
                 }
             }
         }
@@ -183,13 +179,40 @@ namespace Physics_Engine
             lastUpdateUpdate = gameTime.TotalGameTime.Milliseconds;
             */
 
-            if (Input.GetKeyDown(KeyCode.Space))
+            if (Input.GetKey(KeyCode.Space))
             {
-                m_ObjectManager.Add(
-                    new PhysicsGameObjectTraditional(
-                        new Vector2(0, 100), null, new PhysicsCircleDef(10, true, Physics.Properties.Material.SOLID)
-                        )
-                    );  
+                //m_ObjectManager.Add(
+                //    new PhysicsGameObjectTraditional(
+                //        new Vector2(0, 100), null, new PhysicsCircleDef(10, true, Physics.Properties.Material.SOLID)
+                //        )
+                //    );  
+            }
+            if (Input.GetKey(KeyCode.UpArrow))
+            {
+                ObjectManager.m_Objects[1].Body.AddForce(new Vector2(0, 0.002f), Vector2.zero, FORCE_TYPE.FORCE);
+            }
+            if (Input.GetKey(KeyCode.DownArrow))
+            {
+                ObjectManager.m_Objects[1].Body.AddForce(new Vector2(0, -0.002f), Vector2.zero, FORCE_TYPE.FORCE);
+            }
+            if (Input.GetKey(KeyCode.LeftArrow))
+            {
+                ObjectManager.m_Objects[1].Body.AddForce(new Vector2(-0.002f, 0), Vector2.zero, FORCE_TYPE.FORCE);
+            }
+            if (Input.GetKey(KeyCode.RightArrow))
+            {
+                ObjectManager.m_Objects[1].Body.AddForce(new Vector2(0.002f, 0), Vector2.zero, FORCE_TYPE.FORCE);
+            }
+
+            if (Input.GetKey(KeyCode.R))
+            {
+                //m_ObjectManager.Add(
+                //    new PhysicsGameObjectTraditional(
+                //        new Vector2(0, 100), null, new PhysicsCircleDef(10, true, Physics.Properties.Material.SOLID)
+                //        )
+                //    );  
+
+                ObjectManager.m_Objects[1].Body.AddTorque(100000f);
             }
 
             if (Input.GetKeyDown(KeyCode.C))

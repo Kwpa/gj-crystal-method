@@ -37,9 +37,9 @@ namespace Physics_Engine
             }
             else
             {
-                UnityEngine.Debug.Log("p:" + Position + " ," +  Body.PolygonDef.GetVertex(0) + " " + Body.PolygonDef.GetVertex(1) + " " + Body.PolygonDef.GetVertex(2) + " " + Body.PolygonDef.GetVertex(3));  
-                for (int i = 0; i < Body.PolygonDef.VertexCount; i++)
-                    UnityEngine.Debug.DrawLine(Position + Body.PolygonDef.GetVertex(i), Position + Body.PolygonDef.GetVertex((i + 1 == Body.PolygonDef.VertexCount ? 0 : i + 1)), m_Color);
+                UnityEngine.Debug.Log("p:" + Position + " , i: " + Body.Inertia + ", f: " + Body.Force + ", a: " + Body.Angle);  
+                //for (int i = 0; i < Body.PolygonDef.VertexCount; i++)
+                    //UnityEngine.Debug.DrawLine(Position + Body.PolygonDef.GetVertex(i), Position + Body.PolygonDef.GetVertex((i + 1 == Body.PolygonDef.VertexCount ? 0 : i + 1)), m_Color);
             }
         }
     }

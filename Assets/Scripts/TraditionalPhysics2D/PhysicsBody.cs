@@ -69,7 +69,8 @@ namespace Physics_Engine.Physics
             //Update position
             Position += (Velocity * deltatime);
             //Update angle
-            ShapeDef.Rotate(AngularVelocity * deltatime);
+            ShapeDef.Rotate(AngularVelocity * deltatime); //??????
+            //PolygonDef.Rotate(AngularVelocity * deltatime); 
 
             //Center of mass
             if(IsStatic() == false)
@@ -224,12 +225,12 @@ namespace Physics_Engine.Physics
         {
             get { return m_AngularVelocity; }
             private set { 
-                m_AngularVelocity = value; 
+                m_AngularVelocity = value;
                 //Limit to avoid insanity
                 if (m_AngularVelocity > Limits.MAX_ANGULAR_VELOCITY)
                     m_AngularVelocity = Limits.MAX_ANGULAR_VELOCITY;
-                else if(Math.Abs(m_AngularVelocity) < Limits.MIN_ANGULAR_VELOCITY)
-                    m_AngularVelocity = 0;
+                else if (Math.Abs(m_AngularVelocity) < Limits.MIN_ANGULAR_VELOCITY)
+                    m_AngularVelocity = 0;                                               //?????? 
             }
         }
         public Vector2 Acceleration

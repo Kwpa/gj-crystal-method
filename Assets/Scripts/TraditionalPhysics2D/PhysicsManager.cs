@@ -66,10 +66,10 @@ namespace Physics_Engine.Physics
         private IsCollidingDelegate[,] m_CollisionFuncPtrs;
         private CollisionResolveDelegate[] m_ResolveFuncPtrs;
         private List<PhysicsBody> m_Bodies;
-        private static Vector2 m_Gravity = new Vector2(0, -9.8f);
+        private static Vector2 m_Gravity = new Vector2(0, 0);
         private static Vector2 m_GravityNormal = peMath.LeftPerp(m_Gravity);//Normalized in constructor
         private int m_Iterations = 3;
-        private bool m_ShowDebug = true;
+        private bool m_ShowDebug = false;
 
         //TEMP
         PhysicsBody bodySelected = null;
@@ -440,6 +440,7 @@ namespace Physics_Engine.Physics
                 }
 
 
+                // COLLISION STUFF DEBUG 
 
                 //Calculate angular velocities (multiple steps)
 
@@ -449,23 +450,23 @@ namespace Physics_Engine.Physics
                 Vector2 collisionPointRadius1 = collisionPoint - body1.Position;
                 Vector2 collisionPointRadius2 = collisionPoint - body2.Position;
 
-                UnityEngine.Debug.DrawLine(collisionPoint, collisionPoint + collisionInfo.CollisionNormal * 50, Color.blue);
-                UnityEngine.Debug.DrawLine(body2.Position, body2.Position + collisionPointRadius2, Color.cyan);
+                //UnityEngine.Debug.DrawLine(collisionPoint, collisionPoint + collisionInfo.CollisionNormal * 50, Color.blue);
+                //UnityEngine.Debug.DrawLine(body2.Position, body2.Position + collisionPointRadius2, Color.cyan);
 
                 //Calculate vector perpendicular to the vector from mass-center to collision-point
                 Vector2 collisionPointRadius1Perp = peMath.RightPerp(collisionPointRadius1);
                 Vector2 collisionPointRadius2Perp = peMath.RightPerp(collisionPointRadius2);
 
-                UnityEngine.Debug.DrawLine(body1.Position + collisionPointRadius1, body1.Position + collisionPointRadius1 + collisionPointRadius1Perp, Color.red);
-                UnityEngine.Debug.DrawLine(body2.Position + collisionPointRadius2, body2.Position + collisionPointRadius2 + collisionPointRadius2Perp, Color.yellow);
+                //UnityEngine.Debug.DrawLine(body1.Position + collisionPointRadius1, body1.Position + collisionPointRadius1 + collisionPointRadius1Perp, Color.red);
+                //UnityEngine.Debug.DrawLine(body2.Position + collisionPointRadius2, body2.Position + collisionPointRadius2 + collisionPointRadius2Perp, Color.yellow);
 
                 //Velocity at collisionpoint: Vp = ω * r⊥ + Va (r⊥ = perp vector to the vector from bodyCenter to collisionpoint)
                 Vector2 collisionPointVelocity1 = (body1.AngularVelocity * collisionPointRadius1Perp) + body1.Velocity;
                 Vector2 collisionPointVelocity2 = (body2.AngularVelocity * collisionPointRadius2Perp) + body2.Velocity;
 
                 //TEMP
-                UnityEngine.Debug.DrawLine(body1.Position + collisionPointRadius1, body1.Position + collisionPointRadius1 + collisionPointVelocity1, Color.green);
-                UnityEngine.Debug.DrawLine(body2.Position + collisionPointRadius2, body2.Position + collisionPointRadius2 + collisionPointVelocity2, Color.red);
+                //UnityEngine.Debug.DrawLine(body1.Position + collisionPointRadius1, body1.Position + collisionPointRadius1 + collisionPointVelocity1, Color.green);
+                //UnityEngine.Debug.DrawLine(body2.Position + collisionPointRadius2, body2.Position + collisionPointRadius2 + collisionPointVelocity2, Color.red);
                 //TEMP
 
                 //Relative velocity of body1s with respect to body2s collision-point velocity
@@ -484,6 +485,7 @@ namespace Physics_Engine.Physics
                 //Apply force (torque manually calculated by the body itself)
                 body1.AddForce(j * collisionInfo.CollisionNormal, collisionPoint, FORCE_TYPE.IMPULSE);
                 body2.AddForce(-j * collisionInfo.CollisionNormal, collisionPoint, FORCE_TYPE.IMPULSE);
+                //UnityEngine.Debug.Log("a sss " + (-j * collisionInfo.CollisionNormal));
             }
         }
         private void ResolveFluid(PhysicsBody body1, PhysicsBody body2, CollisionInfo collisionInfo)

@@ -26,7 +26,7 @@ namespace Physics_Engine.Physics
             //Water MUST be static (makes no sense to simulate rigid body of water)
             if (Material == Physics.Properties.Material.FLUID)
                 isStatic = true;
-            Density = (p_Material == Properties.Material.SOLID ? Properties.Density.STEEL : Properties.Density.WATER);
+            Density = (p_Material == Properties.Material.SOLID ? Properties.Density.WOOD : Properties.Density.WATER);
             Bounciness = 0.0f;
             VertexCount = p_Vertices.GetLength(0);
             m_Vertices = p_Vertices;
@@ -57,6 +57,7 @@ namespace Physics_Engine.Physics
         //Forced members
         public override void Rotate(float angle, Vector2 origin = new Vector2())
         {
+            UnityEngine.Debug.Log("a " +Angle + " " + angle);
             Angle += angle;
             if (Angle > 2 * (float)Math.PI)
                 Angle = 0;
@@ -64,13 +65,18 @@ namespace Physics_Engine.Physics
                 Angle = 2 * (float)Math.PI;
 
             float tempX;
+            float tempY;
             for (int i = 0; i < VertexCount; i++)
             {
                 //RenderManager.Instance.DrawLine(origin, origin+m_Vertices[i]);
                 //m_Vertices[i] += origin;
                 tempX = m_Vertices[i].x;
+//                tempY = m_Vertices[i].y;
+
+
                 m_Vertices[i].x = (float)(Math.Cos(-angle) * tempX - Math.Sin(-angle) * m_Vertices[i].y);
                 m_Vertices[i].y = (float)(Math.Sin(-angle) * tempX + Math.Cos(-angle) * m_Vertices[i].y);
+                
                 //m_Vertices[i] -= origin;
             }
         }
@@ -111,11 +117,12 @@ namespace Physics_Engine.Physics
         }
         protected override void ComputeInertia()
         {
+            Inertia = 1;
             Inertia = peMath.PolygonInertia(Vertices, Mass);
             if (Inertia > Limits.MAX_INERTIA)
                 Inertia = Limits.MAX_INERTIA;
             else if (Inertia < Limits.MIN_INERTIA)
-                Inertia = Limits.MIN_INERTIA;
+                Inertia = Limits.MIN_INERTIA;                      //Here is the point that the inertia is set!  ?????
         }
         protected override void ComputeVolume()
         {
