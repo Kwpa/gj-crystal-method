@@ -39,9 +39,13 @@ namespace Physics_Engine.Physics
             ComputeCenterOfMass();
             if (isStatic == false)
             {
-                ComputeMass();
+
+                SetInertia(1f);
+                SetMass(5f);
+
+                //ComputeMass();
                 //Calculate moment of inertia
-                ComputeInertia();
+                //ComputeInertia();                   ???????
             }
             else
             {
@@ -99,6 +103,17 @@ namespace Physics_Engine.Physics
             }
             SetAABB(minX + maxX, minY + maxY);
         }
+
+        public void SetMass(float mass)
+        {
+            Mass = mass;
+        }
+
+        public void SetInertia(float inertia)
+        {
+            Inertia = inertia;
+        }
+
         protected override void ComputeMass()
         {
             Mass = Volume * Density * 0.0000002f; //TO BE CORRECTED (?)
@@ -117,6 +132,7 @@ namespace Physics_Engine.Physics
         }
         protected override void ComputeInertia()
         {
+
             Inertia = 1;
             Inertia = peMath.PolygonInertia(Vertices, Mass);
             if (Inertia > Limits.MAX_INERTIA)

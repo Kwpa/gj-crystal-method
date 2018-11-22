@@ -141,6 +141,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Background: {fileID: 0}
+  force: 4
 --- !u!4 &112799603
 Transform:
   m_ObjectHideFlags: 0

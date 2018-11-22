@@ -158,6 +158,7 @@ namespace Physics_Engine
         float circleRadius;
         Vector2 circleStartPos;
         List<Vector2> polygonVertices = new List<Vector2>();
+        public float force = 2;
         //temp
 
 
@@ -189,19 +190,19 @@ namespace Physics_Engine
             }
             if (Input.GetKey(KeyCode.UpArrow))
             {
-                ObjectManager.m_Objects[1].Body.AddForce(new Vector2(0, 0.002f), Vector2.zero, FORCE_TYPE.FORCE);
+                ObjectManager.m_Objects[1].Body.AddForce(new Vector2(0, force), Vector2.zero, FORCE_TYPE.FORCE, false);
             }
             if (Input.GetKey(KeyCode.DownArrow))
             {
-                ObjectManager.m_Objects[1].Body.AddForce(new Vector2(0, -0.002f), Vector2.zero, FORCE_TYPE.FORCE);
+                ObjectManager.m_Objects[1].Body.AddForce(new Vector2(0, -force), Vector2.zero, FORCE_TYPE.FORCE, false);
             }
             if (Input.GetKey(KeyCode.LeftArrow))
             {
-                ObjectManager.m_Objects[1].Body.AddForce(new Vector2(-0.002f, 0), Vector2.zero, FORCE_TYPE.FORCE);
+                ObjectManager.m_Objects[1].Body.AddForce(new Vector2(-force, 0), Vector2.zero, FORCE_TYPE.FORCE, false);
             }
             if (Input.GetKey(KeyCode.RightArrow))
             {
-                ObjectManager.m_Objects[1].Body.AddForce(new Vector2(0.002f, 0), Vector2.zero, FORCE_TYPE.FORCE);
+                ObjectManager.m_Objects[1].Body.AddForce(new Vector2(force, 0), Vector2.zero, FORCE_TYPE.FORCE, false);
             }
 
             if (Input.GetKey(KeyCode.R))
