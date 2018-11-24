@@ -89,10 +89,12 @@ namespace Physics_Engine.Physics
 //        public void Update(){
         public virtual void Update(){   
             CollisionInfo collisionInfo;
-#region TEMP
+            #region TEMP
+            /*
             UnityEngine.Debug.Log("Bodies: " + m_Bodies.Count.ToString());
             //Move selected body
             Vector2 mousePos = Input.mousePosition;
+            
             if (bodySelected != null)
             {
                 //Stop velocity if at mouse-pointer to avoid spring-effect
@@ -103,6 +105,7 @@ namespace Physics_Engine.Physics
                 
                 UnityEngine.Debug.DrawLine(bodySelected.Position, Input.mousePosition); //???????
             }
+            */
 #endregion
                 foreach (PhysicsBody body1 in m_Bodies)
                 {
@@ -119,26 +122,27 @@ namespace Physics_Engine.Physics
                                 m_ResolveFuncPtrs[body2.Material].Invoke(body1, body2, collisionInfo);
                             }
                         }
-                        #region TEMP
-                        //If mouse pressed and no body selected, find new
-                        if (bodySelected == null && Input.GetMouseButtonDown(0) && Math.Abs(mousePos.x - body1.Position.x) < 10
-                                                && Math.Abs(mousePos.y - body1.Position.y) < 10)
-                        {
-                            bodySelected = body1;
-                            bodySelected.AddForce(-bodySelected.Velocity * bodySelected.Mass, bodySelected.Position, FORCE_TYPE.IMPULSE);
-                        }
-                        //Mousebutton released
-                        if (Input.GetMouseButtonUp(0))
-                            bodySelected = null;
-                        //if mousebutton pressed and body selected, don't apply gravity
-                        //if (bodySelected != null &&  body1.GetID() != bodySelected.GetID() || bodySelected == null)
-                        #endregion
-                        body1.AddForce((m_Gravity) * body1.Mass, body1.Position, FORCE_TYPE.IMPULSE);
+                    #region TEMP
+                    /*//If mouse pressed and no body selected, find new
+                    if (bodySelected == null && Input.GetMouseButtonDown(0) && Math.Abs(mousePos.x - body1.Position.x) < 10
+                                            && Math.Abs(mousePos.y - body1.Position.y) < 10)
+                    {
+                        bodySelected = body1;
+                        bodySelected.AddForce(-bodySelected.Velocity * bodySelected.Mass, bodySelected.Position, FORCE_TYPE.IMPULSE);
+                    }
+                    //Mousebutton released
+                    if (Input.GetMouseButtonUp(0))
+                        bodySelected = null;
+                    //if mousebutton pressed and body selected, don't apply gravity
+                    //if (bodySelected != null &&  body1.GetID() != bodySelected.GetID() || bodySelected == null)
+*/
+                    #endregion
 
+                        body1.AddForce((m_Gravity) * body1.Mass, body1.Position, FORCE_TYPE.IMPULSE);
                         body1.Update();
                     }
                 }
-            lastMousePos = mousePos;
+            //lastMousePos = mousePos;
         }
 
         public void AddBody(PhysicsBody p_Body) 
@@ -420,6 +424,15 @@ namespace Physics_Engine.Physics
         //Resolution for "solid against solid"-collision
         private void ResolveSolid(PhysicsBody body1, PhysicsBody body2, CollisionInfo collisionInfo)
         {
+            if(body1.PolygonDef.Trigger)
+            {
+                UnityEngine.Debug.LogWarning("!");
+                return;
+            }
+            if(body2.PolygonDef.Trigger)
+            {
+                return;
+            }
             //Make sure normal is in right direction (avoids a lot of special-code in IsColliding-functions)
             if (Vector2.Dot(body1.Position - body2.Position, collisionInfo.CollisionNormal) < 0)
             {
@@ -488,6 +501,32 @@ namespace Physics_Engine.Physics
                 //UnityEngine.Debug.Log("a sss " + (-j * collisionInfo.CollisionNormal));
             }
         }
+
+        private void ResolveTrigger(PhysicsBody body1, PhysicsBody body2, CollisionInfo collisionInfo)
+        {
+            ////Make sure normal is in right direction (avoids a lot of special-code in IsColliding-functions)
+            //if (Vector2.Dot(body1.Position - body2.Position, collisionInfo.CollisionNormal) < 0)
+            //{
+            //    collisionInfo.CollisionNormal = -collisionInfo.CollisionNormal;
+            //    collisionInfo.Overlapping = -collisionInfo.Overlapping;
+            //}
+
+            UnityEngine.Debug.Log("HIT IN");
+            ////Translate minimum distance so not overlapping
+            //body1.Position += collisionInfo.Overlapping;
+
+            //float j = 0;
+            //Vector2 collisionPointRelativeVelocity1to2 = Vector2.right;
+            ////Not 100% accurate if lands on flat surface because collision-points are calculated one at a time, but works okey.
+            //foreach (Vector2 collisionPoint in collisionInfo.CollisionPoints)
+            //{
+            //    if (m_ShowDebug == true)
+            //    {
+            //        UnityEngine.Debug.DrawLine(collisionPoint, collisionPoint + new Vector2(0, 1), Color.red);    //????
+            //    }
+            //}
+        }
+
         private void ResolveFluid(PhysicsBody body1, PhysicsBody body2, CollisionInfo collisionInfo)
         {
             collisionInfo.CollisionPoints.AddRange(collisionInfo.IntersectionPoints);
@@ -502,7 +541,7 @@ namespace Physics_Engine.Physics
             //TEMP
 
             //TODO: Fix so moment of inertia is not calculated here (not needed and is therefor very inefficient)
-            PhysicsPolygonDef waterPoly = new PhysicsPolygonDef(collisionInfo.CollisionPoints.ToArray(), false, Properties.Density.WATER);
+            PhysicsPolygonDef waterPoly = new PhysicsPolygonDef(collisionInfo.CollisionPoints.ToArray(), false, false, Properties.Density.WATER);
 
             Vector2 centroid = peMath.PolygonCentroid(collisionInfo.CollisionPoints.ToArray(), waterPoly.Volume);
 

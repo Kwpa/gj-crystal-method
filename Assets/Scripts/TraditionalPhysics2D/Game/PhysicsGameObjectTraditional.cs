@@ -32,12 +32,13 @@ namespace Physics_Engine
 
             if (Body.Shape == SHAPE.CIRCLE)
             { 
-                UnityEngine.Debug.Log("p:" + Position + " ," + Body.CircleDef.Radius);
-                UnityEngine.Debug.DrawLine(Position, Position + new Vector2(Body.CircleDef.Radius, Body.CircleDef.Radius), m_Color);
+                //UnityEngine.Debug.Log("p:" + Position + " ," + Body.CircleDef.Radius);
+                //UnityEngine.Debug.DrawLine(Position, Position + new Vector2(Body.CircleDef.Radius, Body.CircleDef.Radius), m_Color);
+
             }
             else
             {
-                UnityEngine.Debug.Log("p:" + Position + " , i: " + Body.Inertia + ", f: " + Body.Force + ", a: " + Body.Angle);  
+                //UnityEngine.Debug.Log("p:" + Position + " , i: " + Body.Inertia + ", f: " + Body.Force + ", a: " + Body.Angle);  
                 //for (int i = 0; i < Body.PolygonDef.VertexCount; i++)
                     //UnityEngine.Debug.DrawLine(Position + Body.PolygonDef.GetVertex(i), Position + Body.PolygonDef.GetVertex((i + 1 == Body.PolygonDef.VertexCount ? 0 : i + 1)), m_Color);
             }

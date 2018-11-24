@@ -81,7 +81,7 @@ namespace Physics_Engine
             Vector2 pos3 = new Vector2(0.5f, 6);
             m_ObjectManager.Add(new PhysicsGameObjectTraditional(pos1, m_Particle, new PhysicsPolygonDef(DefineRectangle(4, 1), true)));
             m_ObjectManager.Add(new PhysicsGameObjectTraditional(pos2, m_Particle, new PhysicsPolygonDef(DefineRectangle(1, 1), false)));
-            m_ObjectManager.Add(new PhysicsGameObjectTraditional(pos3, m_Particle, new PhysicsPolygonDef(DefineRectangle(1, 1), false)));
+            m_ObjectManager.Add(new PhysicsGameObjectTraditional(pos3, m_Particle, new PhysicsPolygonDef(DefineRectangle(1, 1), false, true)));
 
             //m_ObjectManager.Add(new GameObject(new Vector2(SCREEN_WIDTH * 0.5f, SCREEN_HEIGHT * 0.8f), m_Particle, new PhysicsPolygonDef(vertices, true, Material.FLUID)));
 
@@ -166,12 +166,6 @@ namespace Physics_Engine
         {
             m_DeltaTime = Time.deltaTime;
 
-            // Allows the game to exit
-            if (Input.GetKeyDown(KeyCode.Escape))
-            {
-                //SceneManager.
-            }
-
             /*
             //temp FPS counter
             double endtime = gameTime.TotalGameTime.Milliseconds - lastUpdateUpdate;
@@ -180,14 +174,6 @@ namespace Physics_Engine
             lastUpdateUpdate = gameTime.TotalGameTime.Milliseconds;
             */
 
-            if (Input.GetKey(KeyCode.Space))
-            {
-                //m_ObjectManager.Add(
-                //    new PhysicsGameObjectTraditional(
-                //        new Vector2(0, 100), null, new PhysicsCircleDef(10, true, Physics.Properties.Material.SOLID)
-                //        )
-                //    );  
-            }
             if (Input.GetKey(KeyCode.UpArrow))
             {
                 ObjectManager.m_Objects[1].Body.AddForce(new Vector2(0, force), Vector2.zero, FORCE_TYPE.FORCE, false);
@@ -207,122 +193,121 @@ namespace Physics_Engine
 
             if (Input.GetKey(KeyCode.R))
             {
-                //m_ObjectManager.Add(
-                //    new PhysicsGameObjectTraditional(
-                //        new Vector2(0, 100), null, new PhysicsCircleDef(10, true, Physics.Properties.Material.SOLID)
-                //        )
-                //    );  
 
                 ObjectManager.m_Objects[1].Body.AddTorque(100000f);
             }
 
-            if (Input.GetKeyDown(KeyCode.C))
-                m_ObjectManager.Clear();
-            if (Input.GetKeyDown(KeyCode.Z))
-                m_ObjectManager.RemoveLast();
-            
-            if (Input.GetKeyDown(KeyCode.Q))
-                isStatic = !isStatic;
-            if (Input.GetKeyDown(KeyCode.W))
-                isWater = !isWater;
-            if (isDrawingPoly == true || isDrawingCircle == true)
-            {
-                Debug.Log("Static: " + isStatic.ToString());
-                Debug.Log("Material: " + (isWater ? Physics.Properties.Material.FLUID : Physics.Properties.Material.SOLID).ToString());
-            }
-            if (Input.GetKeyDown(KeyCode.A)){
-                if (isDrawingPoly == false)
-                    isDrawingPoly = true;
-                else if (polygonVertices.Count > 2)
-                {
-                    Vector2 startPos = new Vector2();
-                    foreach (Vector2 vertex in polygonVertices)
-                        startPos += vertex;
-                    startPos.x /= polygonVertices.Count;
-                    startPos.y /= polygonVertices.Count;
-                    m_ObjectManager.Add(new PhysicsGameObjectTraditional(startPos, m_Particle, new PhysicsPolygonDef(polygonVertices.ToArray(), 
-                        isStatic, isWater ? Physics.Properties.Material.FLUID : Physics.Properties.Material.SOLID)));
-                    polygonVertices.Clear();
-                    isDrawingPoly = false;
-                }
-                else
-                {
-                    isDrawingPoly = false;
-                    polygonVertices.Clear();
-                }
-            }
-            else if (Input.GetKeyDown(KeyCode.S))
-            {
-                if (isDrawingCircle == false)
-                    isDrawingCircle = true;
-                else if (circleStartPos != Vector2.zero)
-                {
-                    m_ObjectManager.Add(new PhysicsGameObjectTraditional(circleStartPos, m_Particle, new PhysicsCircleDef(circleRadius, isStatic, Physics.Properties.Material.SOLID)));
-                    circleStartPos = Vector2.zero;
-                    circleRadius = 0;
-                    isDrawingCircle = false;
-                }
-                else
-                    isDrawingCircle = false;
-            }
-            if (isDrawingPoly)
-            {
-                Debug.Log("Drawing polygon");
-                foreach (Vector2 vertex in polygonVertices)
-                {
-                    Debug.DrawLine(vertex, vertex+new Vector2(-6,-6));
-                }
-                if (polygonVertices.Count > 2)
-                {
-                    Vector2 edgeNormal1 = peMath.LeftPerp(polygonVertices[polygonVertices.Count - 1] - polygonVertices[polygonVertices.Count - 2]);
-                    Vector2 edgeNormal2 = peMath.LeftPerp(polygonVertices[1] - polygonVertices[0]);
-                    Vector2 edgeNormal3 = peMath.LeftPerp(polygonVertices[0] - polygonVertices[polygonVertices.Count - 1]);
-                    edgeNormal1.Normalize();
-                    edgeNormal2.Normalize();
-                    Vector2 newEdge1 = polygonVertices[polygonVertices.Count - 1] - (Vector2)Input.mousePosition;
-                    Vector2 newEdge2 = polygonVertices[0] - (Vector2)Input.mousePosition;
-                    if (Vector2.Dot(newEdge1, edgeNormal1) < 0 && Vector2.Dot(newEdge2, edgeNormal2) < 0 && Vector2.Dot(newEdge2, edgeNormal3) > 0)
-                    {
-                        Debug.DrawLine(Input.mousePosition, Input.mousePosition + new Vector3(7,7), Color.green);
-                        if (Input.GetMouseButtonDown(0))
-                            polygonVertices.Add(Input.mousePosition);
-                    }
-                    else
-                        Debug.DrawLine(Input.mousePosition, Input.mousePosition + new Vector3(7, 7), Color.red);
-                }
-                else
-                {
-                    if (polygonVertices.Count == 2)
-                    {
-                        Vector2 edge = (Vector2)Input.mousePosition - polygonVertices[1];
-                        Vector2 edgeNormal = peMath.LeftPerp(polygonVertices[1] - polygonVertices[0]);
-                        edgeNormal.Normalize();
-                        if (Vector2.Dot(edge, edgeNormal) > 0)
-                        {
-                            Debug.DrawLine(Input.mousePosition, Input.mousePosition + new Vector3(7, 7), Color.green);
-                            if (Input.GetMouseButtonDown(0))
-                                polygonVertices.Add(Input.mousePosition);
-                        }
-                        else
-                            Debug.DrawLine(Input.mousePosition, Input.mousePosition + new Vector3(7, 7), Color.red);
-                    }
-                    else
-                    {
-                        Debug.DrawLine(Input.mousePosition, Input.mousePosition + new Vector3(7, 7), Color.green);
-                        if (Input.GetMouseButtonDown(0))
-                            polygonVertices.Add(Input.mousePosition);
-                    }
-                }
-            }
-            else if (isDrawingCircle)
-            {
-                Debug.Log("Drawing circle");
-                if (Input.GetMouseButtonUp(0))
-                    circleStartPos = (Vector2)Input.mousePosition;
-                if (Input.GetMouseButtonDown(0))
-                    circleRadius = (circleStartPos - (Vector2)Input.mousePosition).magnitude;
-                Debug.DrawLine(Input.mousePosition, Input.mousePosition + new Vector3(circleRadius, circleRadius), Color.green);
-            }
+            #region MakeShapes
+
+            //if (Input.GetKeyDown(KeyCode.C))
+            //    m_ObjectManager.Clear();
+            //if (Input.GetKeyDown(KeyCode.Z))
+            //    m_ObjectManager.RemoveLast();
+
+            //if (Input.GetKeyDown(KeyCode.Q))
+            //    isStatic = !isStatic;
+            //if (Input.GetKeyDown(KeyCode.W))
+            //    isWater = !isWater;
+            //if (isDrawingPoly == true || isDrawingCircle == true)
+            //{
+            //    Debug.Log("Static: " + isStatic.ToString());
+            //    Debug.Log("Material: " + (isWater ? Physics.Properties.Material.FLUID : Physics.Properties.Material.SOLID).ToString());
+            //}
+            //if (Input.GetKeyDown(KeyCode.A)){
+            //    if (isDrawingPoly == false)
+            //        isDrawingPoly = true;
+            //    else if (polygonVertices.Count > 2)
+            //    {
+            //        Vector2 startPos = new Vector2();
+            //        foreach (Vector2 vertex in polygonVertices)
+            //            startPos += vertex;
+            //        startPos.x /= polygonVertices.Count;
+            //        startPos.y /= polygonVertices.Count;
+            //        m_ObjectManager.Add(new PhysicsGameObjectTraditional(startPos, m_Particle, new PhysicsPolygonDef(polygonVertices.ToArray(), 
+            //            isStatic, false, isWater ? Physics.Properties.Material.FLUID : Physics.Properties.Material.SOLID)));
+            //        polygonVertices.Clear();
+            //        isDrawingPoly = false;
+            //    }
+            //    else
+            //    {
+            //        isDrawingPoly = false;
+            //        polygonVertices.Clear();
+            //    }
+            //}
+            //else if (Input.GetKeyDown(KeyCode.S))
+            //{
+            //    if (isDrawingCircle == false)
+            //        isDrawingCircle = true;
+            //    else if (circleStartPos != Vector2.zero)
+            //    {
+            //        m_ObjectManager.Add(new PhysicsGameObjectTraditional(circleStartPos, m_Particle, new PhysicsCircleDef(circleRadius, isStatic, Physics.Properties.Material.SOLID)));
+            //        circleStartPos = Vector2.zero;
+            //        circleRadius = 0;
+            //        isDrawingCircle = false;
+            //    }
+            //    else
+            //        isDrawingCircle = false;
+            //}
+            //if (isDrawingPoly)
+            //{
+            //    Debug.Log("Drawing polygon");
+            //    foreach (Vector2 vertex in polygonVertices)
+            //    {
+            //        Debug.DrawLine(vertex, vertex+new Vector2(-6,-6));
+            //    }
+            //    if (polygonVertices.Count > 2)
+            //    {
+            //        Vector2 edgeNormal1 = peMath.LeftPerp(polygonVertices[polygonVertices.Count - 1] - polygonVertices[polygonVertices.Count - 2]);
+            //        Vector2 edgeNormal2 = peMath.LeftPerp(polygonVertices[1] - polygonVertices[0]);
+            //        Vector2 edgeNormal3 = peMath.LeftPerp(polygonVertices[0] - polygonVertices[polygonVertices.Count - 1]);
+            //        edgeNormal1.Normalize();
+            //        edgeNormal2.Normalize();
+            //        Vector2 newEdge1 = polygonVertices[polygonVertices.Count - 1] - (Vector2)Input.mousePosition;
+            //        Vector2 newEdge2 = polygonVertices[0] - (Vector2)Input.mousePosition;
+            //        if (Vector2.Dot(newEdge1, edgeNormal1) < 0 && Vector2.Dot(newEdge2, edgeNormal2) < 0 && Vector2.Dot(newEdge2, edgeNormal3) > 0)
+            //        {
+            //            Debug.DrawLine(Input.mousePosition, Input.mousePosition + new Vector3(7,7), Color.green);
+            //            if (Input.GetMouseButtonDown(0))
+            //                polygonVertices.Add(Input.mousePosition);
+            //        }
+            //        else
+            //            Debug.DrawLine(Input.mousePosition, Input.mousePosition + new Vector3(7, 7), Color.red);
+            //    }
+            //    else
+            //    {
+            //        if (polygonVertices.Count == 2)
+            //        {
+            //            Vector2 edge = (Vector2)Input.mousePosition - polygonVertices[1];
+            //            Vector2 edgeNormal = peMath.LeftPerp(polygonVertices[1] - polygonVertices[0]);
+            //            edgeNormal.Normalize();
+            //            if (Vector2.Dot(edge, edgeNormal) > 0)
+            //            {
+            //                Debug.DrawLine(Input.mousePosition, Input.mousePosition + new Vector3(7, 7), Color.green);
+            //                if (Input.GetMouseButtonDown(0))
+            //                    polygonVertices.Add(Input.mousePosition);
+            //            }
+            //            else
+            //                Debug.DrawLine(Input.mousePosition, Input.mousePosition + new Vector3(7, 7), Color.red);
+            //        }
+            //        else
+            //        {
+            //            Debug.DrawLine(Input.mousePosition, Input.mousePosition + new Vector3(7, 7), Color.green);
+            //            if (Input.GetMouseButtonDown(0))
+            //                polygonVertices.Add(Input.mousePosition);
+            //        }
+            //    }
+            //}
+            //else if (isDrawingCircle)
+            //{
+            //    Debug.Log("Drawing circle");
+            //    if (Input.GetMouseButtonUp(0))
+            //        circleStartPos = (Vector2)Input.mousePosition;
+            //    if (Input.GetMouseButtonDown(0))
+            //        circleRadius = (circleStartPos - (Vector2)Input.mousePosition).magnitude;
+            //    Debug.DrawLine(Input.mousePosition, Input.mousePosition + new Vector3(circleRadius, circleRadius), Color.green);
+            //}
+
+            #endregion
 
             // TODO: Add your update logic here
             m_PhysicsManager.Update();

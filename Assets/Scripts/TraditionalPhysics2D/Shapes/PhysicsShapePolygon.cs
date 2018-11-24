@@ -10,6 +10,7 @@ namespace Physics_Engine.Physics
     {
         public PhysicsPolygonDef(PhysicsPolygonDef other)
         {
+            Trigger = other.Trigger;
             Shape = other.Shape;
             Bounciness = other.Bounciness;
             Mass = other.Mass;
@@ -17,16 +18,17 @@ namespace Physics_Engine.Physics
             VertexCount = other.VertexCount;
             m_Vertices = other.m_Vertices;
         }
-        public PhysicsPolygonDef(Vector2[] p_Vertices, bool isStatic = false, int p_Material = Properties.Material.SOLID)
+        public PhysicsPolygonDef(Vector2[] p_Vertices, bool isStatic = false, bool isTrigger = false, int p_Material = Properties.Material.SOLID)
         {
             //Debug.Assert(p_Vertices.Length > 2, "Polygon must have at least 3 or more vertices!");
-
+            Trigger = isTrigger;
             Shape = SHAPE.POLYGON;
             Material = p_Material;
             //Water MUST be static (makes no sense to simulate rigid body of water)
             if (Material == Physics.Properties.Material.FLUID)
                 isStatic = true;
-            Density = (p_Material == Properties.Material.SOLID ? Properties.Density.WOOD : Properties.Density.WATER);
+
+            Density = (p_Material == Properties.Material.SOLID ? Properties.Density.WOOD : Properties.Density.WATER);      //??????
             Bounciness = 0.0f;
             VertexCount = p_Vertices.GetLength(0);
             m_Vertices = p_Vertices;
@@ -49,8 +51,8 @@ namespace Physics_Engine.Physics
             }
             else
             {
-                Mass = 0;
-                Inertia = 0;
+                SetInertia(0);
+                SetMass(0);
             }
         }
         private Vector2[] m_Vertices;

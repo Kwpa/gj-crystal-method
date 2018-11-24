@@ -12,6 +12,7 @@ namespace Physics_Engine.Physics
         }
         private AABB m_AAABB;
         public int Shape { get; protected set; }
+        public bool Trigger { get; protected set; }
         public int Material { get; protected set; }
         public int Density { get; set; }
         public float Angle { get; protected set; }
