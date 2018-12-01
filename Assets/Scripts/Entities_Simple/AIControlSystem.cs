@@ -11,6 +11,7 @@ public class AIControlSystem : ComponentSystem
         public readonly int Length;
 #pragma warning restore 649
         public ComponentDataArray<AIControlInput> Input;
+        public SubtractiveComponent<PreventTransform> PreventTransforms;
     }
 
     [Inject] private PlayerData m_Players;

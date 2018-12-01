@@ -38,10 +38,15 @@ public sealed class Bootstrap
             typeof(Position), typeof(Rotation), typeof(PlayerInput),
             typeof(Health), typeof(Scale));
 
-        // Create player archetype
+        //// Create aiplayer archetype
+        //AIPlayerArchetype = entityManager.CreateArchetype(
+        //    typeof(Position), typeof(Rotation), typeof(AIControlInput),
+        //    typeof(Health), typeof(Scale));
+
+        // Create aiplayer archetype with gravity
         AIPlayerArchetype = entityManager.CreateArchetype(
             typeof(Position), typeof(Rotation), typeof(AIControlInput),
-            typeof(Health), typeof(Scale));
+            typeof(Health), typeof(Scale), typeof(Physics2DEntity));
     }
 
     // Begin a new game.

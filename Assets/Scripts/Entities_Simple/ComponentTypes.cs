@@ -57,3 +57,17 @@ public struct Size : IComponentData
 {
     public int Value;
 }
+
+public struct ApplyGravity : IComponentData
+{
+}
+
+public struct Physics2DEntity : IComponentData
+{
+}
+
+public struct PreventTransform : IComponentData
+{
+}
+
+

@@ -21,6 +21,7 @@ public class PlayerMoveSystem : ComponentSystem
         public ComponentDataArray<Rotation> Heading;
         public ComponentDataArray<AIControlInput> Input;
         public ComponentDataArray<Scale> Scale;
+        public SubtractiveComponent<PreventTransform> PreventTransforms;
     }
 
     [Inject] private PlayerData p_Data;
