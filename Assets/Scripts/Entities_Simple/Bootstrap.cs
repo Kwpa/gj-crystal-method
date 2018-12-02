@@ -46,7 +46,7 @@ public sealed class Bootstrap
         // Create aiplayer archetype with gravity
         AIPlayerArchetype = entityManager.CreateArchetype(
             typeof(Position), typeof(Rotation), typeof(AIControlInput),
-            typeof(Health), typeof(Scale), typeof(Physics2DEntity));
+            typeof(Health), typeof(Scale), typeof(Physics2DEntity), typeof(Vertices), typeof(VehicleType), typeof(ShapeSetupIncomplete));
     }
 
     // Begin a new game.
@@ -114,6 +114,7 @@ public sealed class Bootstrap
         em.SetComponentData(player, new Health { Value = Settings.playerHealth });
         em.SetComponentData(player, new Scale { Value = new float3(1.0f, 1.0f, 1.0f) });
         em.AddSharedComponentData(player, AIPlayerLook);
+        em.AddBuffer<VerticesBuffer>(player);
         return player;
     }
 

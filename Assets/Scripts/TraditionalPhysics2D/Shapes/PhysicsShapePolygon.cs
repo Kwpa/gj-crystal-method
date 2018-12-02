@@ -8,6 +8,12 @@ namespace Physics_Engine.Physics
 {
     public sealed class PhysicsPolygonDef : PhysicsShape
     {
+        private Vector2[] m_Vertices;
+        public int VertexCount { get; private set; }
+        public Vector2[] Vertices { get { return m_Vertices; } }
+        public Vector2 GetVertex(int p_Index) { return m_Vertices[p_Index];}
+
+
         public PhysicsPolygonDef(PhysicsPolygonDef other)
         {
             Trigger = other.Trigger;
@@ -55,10 +61,6 @@ namespace Physics_Engine.Physics
                 SetMass(0);
             }
         }
-        private Vector2[] m_Vertices;
-        public int VertexCount { get; private set; }
-        public Vector2[] Vertices { get { return m_Vertices; } }
-        public Vector2 GetVertex(int p_Index) { return m_Vertices[p_Index];}
 
         //Forced members
         public override void Rotate(float angle, Vector2 origin = new Vector2())
