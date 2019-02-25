@@ -1,8 +1,8 @@
 ﻿using Unity.Entities;
 using Unity.Mathematics;
-using UnityEngine;
 using Unity.Rendering;
 using Unity.Transforms;
+using UnityEngine;
 using UnityEngine.SceneManagement;
 
 public sealed class Bootstrap
@@ -11,9 +11,12 @@ public sealed class Bootstrap
     public static EntityArchetype RootArchetype;
     public static EntityArchetype AIPlayerArchetype;
     public static EntityArchetype BackgroundArchetype;
+    public static EntityArchetype NodeArchetype;
+
     public static MeshInstanceRenderer PlayerLook;
     public static MeshInstanceRenderer AIPlayerLook;
     public static MeshInstanceRenderer BackgroundLook;
+    public static MeshInstanceRenderer NodeLook;
 
     public static Settings Settings;
 
@@ -46,7 +49,12 @@ public sealed class Bootstrap
         // Create aiplayer archetype with gravity
         AIPlayerArchetype = entityManager.CreateArchetype(
             typeof(Position), typeof(Rotation), typeof(AIControlInput),
-            typeof(Health), typeof(Scale), typeof(Physics2DEntity), typeof(Vertices), typeof(VehicleType), typeof(ShapeSetupIncomplete));
+            typeof(Health), typeof(Scale), typeof(Physics2DEntity), 
+            typeof(Vertices), typeof(VehicleType), typeof(ShapeSetupIncomplete), 
+            typeof(NodeIncomplete));
+
+        NodeArchetype = entityManager.CreateArchetype(
+            typeof(Position), typeof(Node));
     }
 
     // Begin a new game.
@@ -151,7 +159,8 @@ public sealed class Bootstrap
 
         PlayerLook = GetLookFromPrototype("PlayerRenderPrototype");
         AIPlayerLook = GetLookFromPrototype("AIPlayerRenderPrototype");
-        BackgroundLook = GetLookFromPrototype("BackgroundRenderPrototype"); 
+        BackgroundLook = GetLookFromPrototype("BackgroundRenderPrototype");
+        NodeLook = GetLookFromPrototype("LineRenderPrototype");
 
         NewGame();
     }

@@ -78,7 +78,26 @@ public struct Physics2DEntity : IComponentData
 [InternalBufferCapacity(8)]
 public struct VerticesBuffer : IBufferElementData
 {
-    public float2 vertPosition;
+    public float4 vertPositions;
+}
+
+[InternalBufferCapacity(8)]
+public struct EntityBuffer : IBufferElementData
+{
+    public Entity entity;
+}
+
+public struct NodeID : IComponentData
+{
+    public int Value;
+}
+
+public struct Node : IComponentData
+{ 
+}
+
+public struct NodeIncomplete : IComponentData
+{
 }
 
 public struct Vertices : IComponentData
